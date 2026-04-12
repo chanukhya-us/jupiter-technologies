@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Onboard Marketer - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Onboard New Marketer</h1>
+    <p class="rt-subtitle">Create a new marketer user account with profile settings.</p>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('marketer_activity.list_logs') }}">Back</a>
+</div>
+
+<div class="rt-card">
+  <form class="row g-3" method="post" action="{{ url_for('marketer_activity.onboard_marketer') }}">
+    <div class="col-12">
+      <h2 class="h5 mb-3">User Account Information</h2>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Username <span class="text-danger">*</span></label>
+      <input class="form-control" type="text" name="username" required placeholder="e.g., john.doe" />
+      <small class="form-text text-muted">Used for login. Must be unique.</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Full Name <span class="text-danger">*</span></label>
+      <input class="form-control" type="text" name="full_name" required placeholder="e.g., John Doe" />
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Email</label>
+      <input class="form-control" type="email" name="email" placeholder="e.g., john.doe@jupiter.tech" />
+      <small class="form-text text-muted">Optional. Must be unique if provided.</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Password <span class="text-danger">*</span></label>
+      <input class="form-control" type="password" name="password" required minlength="6" />
+      <small class="form-text text-muted">Minimum 6 characters.</small>
+    </div>
+
+    <div class="col-12 mt-4">
+      <h2 class="h5 mb-3">Profile Settings</h2>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Timezone</label>
+      <input class="form-control" name="timezone" value="America/New_York" required />
+      <small class="form-text text-muted">e.g., America/New_York, America/Los_Angeles</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Daily Cutoff Time (HH:MM)</label>
+      <input class="form-control" name="daily_cutoff_local_time" value="17:00" required pattern="[0-2][0-9]:[0-5][0-9]" />
+      <small class="form-text text-muted">24-hour format. Logs must be submitted before this time.</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Reminder Times (comma separated HH:MM)</label>
+      <input class="form-control" name="reminder_times_local" value="09:00,15:00" />
+      <small class="form-text text-muted">e.g., 09:00,15:00,16:30</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Escalation After Misses</label>
+      <input class="form-control" type="number" min="1" name="escalation_after_misses" value="2" required />
+      <small class="form-text text-muted">Number of consecutive missed logs before escalation.</small>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Manager (optional)</label>
+      <select class="form-select" name="manager_user_id">
+        <option value="">-- None --</option>
+        {% for manager in potential_managers %}
+        <option value="{{ manager.id }}">{{ manager.full_name }} ({{ manager.role.name }})</option>
+        {% endfor %}
+      </select>
+      <small class="form-text text-muted">Manager will receive escalation notifications.</small>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-end">
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="reminder_enabled" name="reminder_enabled" value="1" checked />
+        <label class="form-check-label" for="reminder_enabled">Enable reminders and escalations</label>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Workdays</label>
+      <div class="d-flex flex-wrap gap-3">
+        {% set day_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+        {% for day in range(7) %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="workday_{{ day }}" name="workday_{{ day }}" value="1" {% if day < 5 %}checked{% endif %} />
+          <label class="form-check-label" for="workday_{{ day }}">{{ day_labels[day] }}</label>
+        </div>
+        {% endfor %}
+      </div>
+      <small class="form-text text-muted">Select the days this marketer is expected to submit logs.</small>
+    </div>
+
+    <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+      <a class="btn btn-outline-secondary" href="{{ url_for('marketer_activity.list_logs') }}">Cancel</a>
+      <button class="btn btn-primary" type="submit">Create Marketer</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

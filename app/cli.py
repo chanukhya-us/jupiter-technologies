@@ -56,13 +56,29 @@ def create_user_command(
     click.echo(f"{role.title()} user {username} created.")
 
 
+@click.command("process-marketer-reminders")
+def process_marketer_reminders_command():
+    from .marketer.service import process_marketer_reminders
+
+    summary = process_marketer_reminders()
+    click.echo(
+        "Processed marketer reminders: "
+        f"profiles={summary['profiles_checked']}, "
+        f"reminders={summary['reminders_created']}, "
+        f"missed_logs={summary['logs_marked_missed']}, "
+        f"escalations={summary['escalations_created']}, "
+        f"emails_sent={summary['emails_sent']}, "
+        f"emails_failed={summary['emails_failed']}"
+    )
+
+
 @click.command("seed-demo-data")
 def seed_demo_data_command():
     from datetime import timedelta
     import random
     from .models import (
         ActivityLog, CandidateStatusHistory, Employee, EmployeeProject,
-        Note, Project, Submission, SubmissionStatusHistory, Task, Timesheet
+        MarketerDailyLog, MarketerProfile, Note, Project, Submission, SubmissionStatusHistory, Task, Timesheet
     )
     
     _seed_roles()
@@ -73,6 +89,7 @@ def seed_demo_data_command():
     recruiter_role = Role.query.filter_by(name="recruiter").first()
     hr_role = Role.query.filter_by(name="hr").first()
     employee_role = Role.query.filter_by(name="employee").first()
+    marketer_role = Role.query.filter_by(name="marketer").first()
 
     first_names = ["Sarah", "Mike", "Emily", "Robert", "Jessica", "David", "Amanda", "Chris", "Lisa", "James",
                    "Maria", "John", "Jennifer", "Michael", "Linda", "William", "Patricia", "Richard", "Barbara", "Joseph",
@@ -92,11 +109,13 @@ def seed_demo_data_command():
         ("hr1", "Emily Davis", "emily.d@jupiter.tech", hr_role),
         ("hr2", "Robert Wilson", "robert.w@jupiter.tech", hr_role),
         ("admin1", "Jessica Martinez", "jessica.m@jupiter.tech", admin_role),
+        ("marketer1", "Olivia Parker", "olivia.p@jupiter.tech", marketer_role),
+        ("marketer2", "Noah Simmons", "noah.s@jupiter.tech", marketer_role),
     ])
     
     # Generate additional users to reach 30+
-    role_distribution = [recruiter_role] * 15 + [hr_role] * 8 + [admin_role] * 5 + [employee_role] * 7
-    for i in range(5, 35):
+    role_distribution = [recruiter_role] * 13 + [hr_role] * 7 + [admin_role] * 4 + [employee_role] * 6 + [marketer_role] * 6
+    for i in range(7, 37):
         first = first_names[i % len(first_names)]
         last = last_names[i % len(last_names)]
         username = f"user{i}"
@@ -123,6 +142,63 @@ def seed_demo_data_command():
     recruiter2 = users["recruiter2"]
     hr1 = users["hr1"]
     all_users = list(users.values())
+
+    marketer_users = [user for user in all_users if user.role and user.role.name == "marketer"]
+    for marketer in marketer_users:
+        profile = MarketerProfile.query.filter_by(user_id=marketer.id).first()
+        if profile is None:
+            profile = MarketerProfile(
+                user_id=marketer.id,
+                timezone=current_app.config["MARKETER_DEFAULT_TIMEZONE"],
+                workdays_mask="1,1,1,1,1,0,0",
+                daily_cutoff_local_time=current_app.config["MARKETER_DEFAULT_CUTOFF_LOCAL"],
+                reminder_enabled=True,
+                reminder_times_local=current_app.config["MARKETER_DEFAULT_REMINDER_TIMES"],
+                escalation_after_misses=current_app.config["MARKETER_DEFAULT_ESCALATION_AFTER_MISSES"],
+            )
+            db.session.add(profile)
+
+    today = datetime.now(UTC).date()
+    marketer_statuses = ["submitted", "late", "missed", "submitted", "waived", "submitted"]
+    marketer_job_types = ["w2", "c2c", "1099", "contract", "full_time", "part_time", "unknown"]
+    for marketer in marketer_users:
+        for offset in range(0, 14):
+            log_date = today - timedelta(days=offset)
+            if log_date.weekday() > 4:
+                continue
+
+            existing_log = MarketerDailyLog.query.filter_by(
+                marketer_user_id=marketer.id,
+                log_date=log_date,
+            ).first()
+            if existing_log is not None:
+                continue
+
+            status = marketer_statuses[offset % len(marketer_statuses)]
+            jobs_applied = random.randint(2, 14) if status != "missed" else 0
+            follow_ups = random.randint(1, 8) if status != "missed" else 0
+            interviews = random.randint(0, 4) if status != "missed" else 0
+            pay_discussions = random.randint(0, 2) if status != "missed" else 0
+
+            log = MarketerDailyLog(
+                marketer_user_id=marketer.id,
+                log_date=log_date,
+                status=status,
+                jobs_applied=jobs_applied,
+                follow_ups=follow_ups,
+                interviews_scheduled=interviews,
+                pay_discussions=pay_discussions,
+                job_type=marketer_job_types[offset % len(marketer_job_types)],
+                hourly_rate_min=65.0 if status != "missed" else None,
+                hourly_rate_max=95.0 if status != "missed" else None,
+                project_duration_weeks=24 if status != "missed" else None,
+                notes=None if status != "missed" else "Auto-seeded missed entry",
+                submitted_at=datetime.now(UTC) if status in {"submitted", "late", "waived"} else None,
+                submitted_by_user_id=marketer.id if status in {"submitted", "late", "waived"} else None,
+                created_by=marketer.id,
+                updated_by=marketer.id,
+            )
+            db.session.add(log)
 
     # Create clients (30+)
     company_prefixes = ["Tech", "Global", "Advanced", "Premier", "Elite", "Dynamic", "Innovative", "Strategic", "Digital", "Smart"]
@@ -619,8 +695,93 @@ def seed_demo_data_command():
             )
             db.session.add(log)
 
+    # Create marketer profiles and daily logs (30+ logs)
+    marketer_users = [u for u in all_users if u.role and u.role.name == "marketer"]
+    
+    if marketer_users:
+        # Create marketer profiles
+        for marketer in marketer_users:
+            profile = MarketerProfile.query.filter_by(user_id=marketer.id).first()
+            if profile is None:
+                profile = MarketerProfile(
+                    user_id=marketer.id,
+                    workdays_mask="1,2,3,4,5",  # Monday to Friday
+                    reminder_times_local="09:00,15:00",
+                    reminder_enabled=True,
+                    escalation_enabled=True,
+                )
+                db.session.add(profile)
+        
+        db.session.flush()
+        
+        # Create daily logs for the past 45 days
+        log_statuses = ["submitted", "submitted", "submitted", "late", "missed", "waived"]
+        job_types_list = ["w2", "c2c", "1099", "contract", "full_time", "part_time", "unknown"]
+        
+        for days_ago in range(45):
+            log_date = (datetime.now(UTC).date() - timedelta(days=days_ago))
+            
+            # Skip weekends
+            if log_date.weekday() >= 5:
+                continue
+            
+            for marketer in marketer_users:
+                # Create logs for about 70% of workdays
+                if random.random() > 0.3:
+                    existing_log = MarketerDailyLog.query.filter_by(
+                        marketer_user_id=marketer.id,
+                        log_date=log_date
+                    ).first()
+                    
+                    if existing_log is None:
+                        status = random.choice(log_statuses)
+                        jobs_applied = random.randint(0, 15)
+                        follow_ups = random.randint(0, min(jobs_applied, 10))
+                        interviews = random.randint(0, min(follow_ups, 5))
+                        pay_discussions = random.randint(0, min(interviews, 3))
+                        
+                        # Adjust counts based on status
+                        if status == "missed":
+                            jobs_applied = follow_ups = interviews = pay_discussions = 0
+                        elif status == "late":
+                            jobs_applied = max(1, jobs_applied // 2)
+                            follow_ups = max(0, follow_ups // 2)
+                            interviews = max(0, interviews // 2)
+                            pay_discussions = max(0, pay_discussions // 2)
+                        
+                        job_type = random.choice(job_types_list)
+                        hourly_min = random.randint(40, 80)
+                        hourly_max = hourly_min + random.randint(10, 40)
+                        
+                        log = MarketerDailyLog(
+                            marketer_user_id=marketer.id,
+                            log_date=log_date,
+                            status=status,
+                            jobs_applied=jobs_applied,
+                            follow_ups=follow_ups,
+                            interviews_scheduled=interviews,
+                            pay_discussions=pay_discussions,
+                            job_type=job_type,
+                            hourly_rate_min=hourly_min if job_type in ["c2c", "1099", "contract"] else None,
+                            hourly_rate_max=hourly_max if job_type in ["c2c", "1099", "contract"] else None,
+                            project_duration_weeks=random.randint(12, 52) if job_type in ["contract", "c2c"] else None,
+                            notes=f"Daily activity for {log_date.strftime('%A, %B %d')}" if random.random() > 0.5 else None,
+                            submitted_at=datetime.now(UTC) - timedelta(days=days_ago, hours=random.randint(8, 18)) if status != "draft" else None,
+                            created_by=marketer.id,
+                            updated_by=marketer.id,
+                        )
+                        db.session.add(log)
+
     db.session.commit()
+    
+    # Print summary
+    marketer_count = len(marketer_users)
+    marketer_logs_count = MarketerDailyLog.query.count()
+    
     click.echo("Comprehensive demo data with 30+ records per entity seeded successfully!")
+    if marketer_count > 0:
+        click.echo(f"  - {marketer_count} Marketer users with profiles")
+        click.echo(f"  - {marketer_logs_count} Marketer daily activity logs")
 
 
 def _seed_roles() -> None:
@@ -664,4 +825,5 @@ def register_cli_commands(app):
     app.cli.add_command(create_owner_command)
     app.cli.add_command(create_admin_command)
     app.cli.add_command(create_user_command)
+    app.cli.add_command(process_marketer_reminders_command)
     app.cli.add_command(seed_demo_data_command)

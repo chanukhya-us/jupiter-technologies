@@ -38,6 +38,22 @@ def list_submissions():
         query = query.filter(Submission.status == status)
 
     submissions = query.order_by(Submission.created_at.desc()).all()
+    
+    # Calculate metrics
+    total_submissions = len(submissions)
+    interview_count = len([s for s in submissions if s.status == 'interview'])
+    selected_count = len([s for s in submissions if s.status in ['selected', 'offered', 'joined']])
+    rejected_count = len([s for s in submissions if s.status == 'rejected'])
+    conversion_rate = round((selected_count / total_submissions * 100), 1) if total_submissions > 0 else 0
+    
+    metrics = {
+        "total": total_submissions,
+        "interviews": interview_count,
+        "selected": selected_count,
+        "rejected": rejected_count,
+        "conversion_rate": conversion_rate,
+    }
+    
     charts = {
         "status": build_donut_chart(
             [submission.status for submission in submissions],
@@ -55,8 +71,10 @@ def list_submissions():
         "submissions/list.html",
         submissions=submissions,
         charts=charts,
+        metrics=metrics,
         recruiters=recruiters,
         jobs=jobs,
+        submission_statuses=SUBMISSION_STATUSES,
         filters={
             "recruiter_user_id": recruiter_user_id,
             "job_id": job_id,

@@ -43,6 +43,13 @@
   </div>
 </form>
 
+<div class="rt-kpi-grid mb-4">
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Total Submissions</div><div class="rt-kpi-value">{{ metrics.total }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">In Interview</div><div class="rt-kpi-value">{{ metrics.interviews }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Selected/Offered</div><div class="rt-kpi-value">{{ metrics.selected }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Conversion Rate</div><div class="rt-kpi-value">{{ metrics.conversion_rate }}%</div></div>
+</div>
+
 <div class="rt-chart-grid">
   {{ donut_card('submissionStatusChart', 'Submission Status Mix', 'Current funnel progression across filtered submissions.', charts.status, 'Submissions') }}
   {{ donut_card('submissionRecruiterChart', 'Recruiter Activity Mix', 'Submission volume split by recruiter.', charts.recruiter, 'Submissions') }}

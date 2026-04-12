@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Chart Test - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Chart System Test</h1>
+    <p class="rt-subtitle">Verify charts are working correctly</p>
+  </div>
+</div>
+
+<div class="rt-card mb-4">
+  <h2 class="h5 mb-3">System Check</h2>
+  <div id="systemCheck">
+    <p>Checking chart system...</p>
+  </div>
+</div>
+
+<div class="rt-graph-card mb-4">
+  <div class="rt-graph-head">
+    <div>
+      <h2 class="rt-graph-title">Test Line Chart</h2>
+      <p class="rt-graph-subtitle">Simple line chart to verify rendering</p>
+    </div>
+    <span class="rt-chart-total">7 days</span>
+  </div>
+  <div class="rt-graph-canvas-wrap">
+    <canvas
+      class="rt-series-chart"
+      data-chart-type="line"
+      data-labels='["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]'
+      data-datasets='[{
+        "label": "Test Data",
+        "data": [12, 19, 15, 25, 22, 18, 20],
+        "borderColor": "#0f62fe",
+        "backgroundColor": "rgba(15, 98, 254, 0.1)",
+        "fill": true,
+        "tension": 0.4
+      }]'
+      data-show-legend="false"
+    ></canvas>
+  </div>
+</div>
+
+<div class="rt-chart-card mb-4">
+  <div class="rt-chart-head">
+    <div>
+      <h3 class="rt-chart-title">Test Donut Chart</h3>
+      <p class="rt-chart-subtitle">Simple donut chart to verify rendering</p>
+    </div>
+    <span class="rt-chart-total">90</span>
+  </div>
+  <div class="rt-chart-body">
+    <div class="rt-chart-canvas-wrap">
+      <canvas
+        class="rt-donut-chart"
+        data-labels='["Active", "Pending", "Completed", "Rejected"]'
+        data-values='[25, 15, 40, 10]'
+        data-total="90"
+      ></canvas>
+    </div>
+    <ul class="rt-chart-legend">
+      <li>
+        <span class="rt-chart-legend-label">
+          <span class="rt-chart-dot" style="background: #0f62fe;"></span>
+          Active
+        </span>
+        <span class="rt-chart-legend-value">25 (27.8%)</span>
+      </li>
+      <li>
+        <span class="rt-chart-legend-label">
+          <span class="rt-chart-dot" style="background: #24a148;"></span>
+          Pending
+        </span>
+        <span class="rt-chart-legend-value">15 (16.7%)</span>
+      </li>
+      <li>
+        <span class="rt-chart-legend-label">
+          <span class="rt-chart-dot" style="background: #ff832b;"></span>
+          Completed
+        </span>
+        <span class="rt-chart-legend-value">40 (44.4%)</span>
+      </li>
+      <li>
+        <span class="rt-chart-legend-label">
+          <span class="rt-chart-dot" style="background: #da1e28;"></span>
+          Rejected
+        </span>
+        <span class="rt-chart-legend-value">10 (11.1%)</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="rt-card">
+  <h2 class="h5 mb-3">Console Output</h2>
+  <p>Open browser console (F12) to see chart initialization logs.</p>
+  <p>You should see:</p>
+  <pre style="background: #f5f7fa; padding: 10px; border-radius: 4px;">Initializing Jupiter Charts...
+Donut chart rendered: 4 segments
+Series chart rendered: line 1 datasets
+Charts initialized successfully</pre>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // System check
+  window.addEventListener('DOMContentLoaded', function() {
+    const checkDiv = document.getElementById('systemCheck');
+    const checks = [];
+    
+    // Check Chart.js
+    if (typeof Chart !== 'undefined') {
+      checks.push('✅ Chart.js loaded (version: ' + Chart.version + ')');
+    } else {
+      checks.push('❌ Chart.js NOT loaded');
+    }
+    
+    // Check JupiterCharts
+    if (typeof JupiterCharts !== 'undefined') {
+      checks.push('✅ JupiterCharts initialized');
+    } else {
+      checks.push('❌ JupiterCharts NOT initialized');
+    }
+    
+    // Check canvas elements
+    const donutCharts = document.querySelectorAll('canvas.rt-donut-chart');
+    const seriesCharts = document.querySelectorAll('canvas.rt-series-chart');
+    checks.push('✅ Found ' + donutCharts.length + ' donut chart(s)');
+    checks.push('✅ Found ' + seriesCharts.length + ' series chart(s)');
+    
+    checkDiv.innerHTML = '<ul style="list-style: none; padding: 0;">' + 
+      checks.map(c => '<li style="padding: 5px 0;">' + c + '</li>').join('') + 
+      '</ul>';
+  });
+</script>
+{% endblock %}

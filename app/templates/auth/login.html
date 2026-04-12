@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
+{% from 'partials/assets.html' import render_asset_image %}
 {% block title %}Login - Jupiter Technologies{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-5">
     <div class="card shadow-sm">
       <div class="card-body p-4">
+        <div class="rt-login-brand">
+          {% if asset_pack.brand_logo %}
+          {{ render_asset_image(asset_pack.brand_logo, alt='Jupiter Technologies logo', class_name='rt-login-logo', loading='eager', fetchpriority='high') }}
+          {% endif %}
+          <p class="rt-login-wordmark">Jupiter Technologies</p>
+        </div>
         <h1 class="h4 mb-3">Sign in</h1>
         <form method="post" action="{{ url_for('auth.login_post') }}">
           <div class="mb-3">

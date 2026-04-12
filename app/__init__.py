@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from flask import Flask, redirect, url_for
+from flask import Flask, abort, redirect, request, url_for
 from flask_login import current_user
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
 from config import BACKUP_DIR, UPLOAD_DIR, config_by_name
 
+from .assets import build_template_asset_pack
 from .cli import register_cli_commands
 from .constants import (
     CANDIDATE_STATUSES,
@@ -16,6 +17,8 @@ from .constants import (
     EMPLOYMENT_TYPES,
     ENTITY_TYPES,
     JOB_STATUSES,
+    MARKETER_JOB_TYPES,
+    MARKETER_LOG_STATUSES,
     NOTE_TYPES,
     PROJECT_STATUSES,
     ROLES,
@@ -58,6 +61,7 @@ def create_app(config_name: str = "default") -> Flask:
     from .clients.routes import clients_bp
     from .employees.routes import employees_bp
     from .jobs.routes import jobs_bp
+    from .marketer.routes import marketer_activity_bp
     from .notes.routes import notes_bp
     from .projects.routes import projects_bp
     from .reports.routes import reports_bp
@@ -69,6 +73,7 @@ def create_app(config_name: str = "default") -> Flask:
     app.register_blueprint(candidates_bp)
     app.register_blueprint(clients_bp)
     app.register_blueprint(jobs_bp)
+    app.register_blueprint(marketer_activity_bp)
     app.register_blueprint(submissions_bp)
     app.register_blueprint(employees_bp)
     app.register_blueprint(projects_bp)
@@ -84,11 +89,44 @@ def create_app(config_name: str = "default") -> Flask:
             return redirect(url_for("reports.dashboard"))
         return redirect(url_for("auth.login"))
 
+    @app.before_request
+    def restrict_marketer_scope():
+        if not current_user.is_authenticated or current_user.role is None:
+            return None
+        if current_user.role.name != "marketer":
+            return None
+
+        endpoint = request.endpoint or ""
+        if not endpoint:
+            return None
+
+        allowed_marketer_endpoints = {
+            "index",
+            "auth.login",
+            "auth.login_post",
+            "auth.logout",
+            "reports.dashboard",
+        }
+        if (
+            endpoint in allowed_marketer_endpoints
+            or endpoint.startswith("marketer_activity.")
+            or endpoint.startswith("static")
+        ):
+            return None
+
+        return abort(403)
+
     @app.context_processor
     def inject_shared_options():
         user_options = []
         if current_user.is_authenticated:
             user_options = User.query.order_by(User.full_name.asc()).all()
+        asset_pack = build_template_asset_pack(
+            manifest_path=app.config["ASSET_MANIFEST_PATH"],
+            show_partner_logos=app.config["SHOW_PARTNER_LOGOS"],
+            dashboard_partner_logo_limit=app.config["DASHBOARD_PARTNER_LOGO_LIMIT"],
+            clients_partner_logo_limit=app.config["CLIENTS_PARTNER_LOGO_LIMIT"],
+        )
         return {
             "roles": ROLES,
             "candidate_statuses": CANDIDATE_STATUSES,
@@ -100,9 +138,12 @@ def create_app(config_name: str = "default") -> Flask:
             "timesheet_statuses": TIMESHEET_STATUSES,
             "task_priorities": TASK_PRIORITIES,
             "task_statuses": TASK_STATUSES,
+            "marketer_log_statuses": MARKETER_LOG_STATUSES,
+            "marketer_job_types": MARKETER_JOB_TYPES,
             "note_types": NOTE_TYPES,
             "entity_types": ENTITY_TYPES,
             "users": user_options,
+            "asset_pack": asset_pack,
         }
 
     return app

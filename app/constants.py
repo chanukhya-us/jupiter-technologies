@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-ROLES = ["owner", "admin", "recruiter", "hr", "employee"]
+ROLES = ["owner", "admin", "recruiter", "hr", "employee", "marketer"]
 
 CANDIDATE_STATUSES = [
     "new",
@@ -39,3 +39,18 @@ NOTE_TYPES = ["call", "email", "internal", "feedback", "followup"]
 ENTITY_TYPES = ["candidate", "client", "job", "submission", "employee", "project", "general"]
 
 ALLOWED_ATTACHMENT_ENTITY_TYPES = ["candidate", "employee", "submission", "project"]
+
+MARKETER_LOG_STATUSES = ["draft", "submitted", "late", "missed", "waived"]
+MARKETER_JOB_TYPES = [
+    "w2",
+    "c2c",
+    "1099",
+    "contract",
+    "full_time",
+    "part_time",
+    "internship",
+    "unknown",
+]
+MARKETER_NOTIFICATION_TYPES = ["reminder", "escalation", "system"]
+MARKETER_NOTIFICATION_CHANNELS = ["in_app", "email"]
+MARKETER_NOTIFICATION_STATUSES = ["pending", "sent", "read", "failed"]

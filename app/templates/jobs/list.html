@@ -43,6 +43,29 @@
   </div>
 </form>
 
+<section class="rt-graph-card mb-4">
+  <div class="rt-graph-head">
+    <div>
+      <h2 class="rt-graph-title">Job Opening Trend</h2>
+      <p class="rt-graph-subtitle">New job openings created (last {{ trend_graph.days }} days)</p>
+    </div>
+    <span class="rt-chart-total">{{ trend_graph.total }} new</span>
+  </div>
+  {% if trend_graph.is_empty %}
+  <p class="rt-chart-empty">No job data available. Add some jobs to see the trend.</p>
+  {% else %}
+  <div class="rt-graph-canvas-wrap">
+    <canvas
+      class="rt-series-chart"
+      data-chart-type="line"
+      data-labels='{{ trend_graph.labels | tojson }}'
+      data-datasets='{{ trend_graph.datasets | tojson }}'
+      data-show-legend="false"
+    ></canvas>
+  </div>
+  {% endif %}
+</section>
+
 <div class="rt-chart-grid">
   {{ donut_card('jobStatusChart', 'Job Status Mix', 'Open versus paused or closed positions in this view.', charts.status, 'Jobs') }}
   {{ donut_card('jobOwnerChart', 'Job Ownership Mix', 'Workload distribution by recruiting owner.', charts.owner, 'Jobs') }}

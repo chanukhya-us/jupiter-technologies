@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'partials/charts.html' import donut_card %}
+{% from 'partials/assets.html' import render_asset_image %}
 {% block title %}Dashboard - Jupiter Technologies{% endblock %}
 {% block content %}
 <div class="rt-page-header">
@@ -17,6 +18,96 @@
   <div class="rt-kpi-card"><div class="rt-kpi-label">Active Employees</div><div class="rt-kpi-value">{{ metrics.active_employees }}</div></div>
   <div class="rt-kpi-card"><div class="rt-kpi-label">Pending Timesheets</div><div class="rt-kpi-value">{{ metrics.pending_timesheets }}</div></div>
   <div class="rt-kpi-card"><div class="rt-kpi-label">Overdue Tasks</div><div class="rt-kpi-value">{{ metrics.overdue_tasks }}</div></div>
+</div>
+
+<div class="rt-dashboard-analytics">
+  <section class="rt-graph-card rt-graph-card-hero">
+    <div class="rt-graph-head">
+      <div>
+        <h2 class="rt-graph-title">Hiring Activity Trend</h2>
+        <p class="rt-graph-subtitle">Candidates, submissions, and opened jobs for the last six months.</p>
+      </div>
+      <span class="rt-chart-total">Last 6 Months</span>
+    </div>
+    <div class="rt-graph-metrics">
+      <span class="rt-graph-metric">Candidates: {{ graphs.hiring_activity.totals.candidates }}</span>
+      <span class="rt-graph-metric">Submissions: {{ graphs.hiring_activity.totals.submissions }}</span>
+      <span class="rt-graph-metric">Jobs: {{ graphs.hiring_activity.totals.jobs }}</span>
+    </div>
+    {% if graphs.hiring_activity.is_empty %}
+    <p class="rt-chart-empty">No hiring activity data available in the selected history window.</p>
+    {% else %}
+    <div class="rt-graph-canvas-wrap rt-graph-canvas-wrap-hero">
+      <canvas
+        class="rt-series-chart"
+        data-chart-type="bar"
+        data-labels='{{ graphs.hiring_activity.labels | tojson }}'
+        data-datasets='{{ graphs.hiring_activity.datasets | tojson }}'
+        data-legend-position="bottom"
+      ></canvas>
+    </div>
+    {% endif %}
+  </section>
+
+  <div class="rt-dashboard-analytics-stack">
+    <section class="rt-graph-card">
+      <div class="rt-graph-head">
+        <div>
+          <h2 class="rt-graph-title">Timesheet Velocity</h2>
+          <p class="rt-graph-subtitle">Weekly delivery throughput and submission count.</p>
+        </div>
+        <span class="rt-chart-total">Last 8 Weeks</span>
+      </div>
+      <div class="rt-graph-metrics">
+        <span class="rt-graph-metric">Hours: {{ graphs.timesheet_velocity.totals.hours }}</span>
+        <span class="rt-graph-metric">Timesheets: {{ graphs.timesheet_velocity.totals.timesheets }}</span>
+      </div>
+      {% if graphs.timesheet_velocity.is_empty %}
+      <p class="rt-chart-empty">No timesheet velocity data available in the selected history window.</p>
+      {% else %}
+      <div class="rt-graph-canvas-wrap">
+        <canvas
+          class="rt-series-chart"
+          data-chart-type="bar"
+          data-labels='{{ graphs.timesheet_velocity.labels | tojson }}'
+          data-datasets='{{ graphs.timesheet_velocity.datasets | tojson }}'
+          data-legend-position="bottom"
+        ></canvas>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="rt-graph-card">
+      <div class="rt-graph-head">
+        <div>
+          <h2 class="rt-graph-title">Submission Funnel Volume</h2>
+          <p class="rt-graph-subtitle">Current stage counts across the submission pipeline.</p>
+        </div>
+        <span class="rt-chart-total">{{ graphs.submission_funnel.total }}</span>
+      </div>
+      {% if not graphs.submission_funnel.is_empty %}
+      <div class="rt-graph-canvas-wrap rt-graph-canvas-wrap-compact">
+        <canvas
+          class="rt-series-chart"
+          data-chart-type="bar"
+          data-horizontal="true"
+          data-show-legend="false"
+          data-labels='{{ graphs.submission_funnel.labels | tojson }}'
+          data-datasets='{{ graphs.submission_funnel.datasets | tojson }}'
+        ></canvas>
+      </div>
+      {% else %}
+      <p class="rt-chart-empty">No submission data available for this view.</p>
+      {% endif %}
+    </section>
+  </div>
+</div>
+
+<div class="rt-page-header rt-page-header-tight">
+  <div>
+    <h2 class="rt-section-title">Circular Status Views</h2>
+    <p class="rt-subtitle">Clean donut snapshots for operational health by module.</p>
+  </div>
 </div>
 
 <div class="rt-chart-grid">
@@ -58,14 +149,42 @@
     <div class="rt-card h-100">
       <h2 class="h6 mb-3">Quick Actions</h2>
       <div class="d-grid gap-2">
-        <a class="btn btn-outline-primary" href="{{ url_for('candidates.new_candidate') }}">Add Candidate</a>
-        <a class="btn btn-outline-primary" href="{{ url_for('jobs.new_job') }}">Create Job</a>
-        <a class="btn btn-outline-primary" href="{{ url_for('submissions.new_submission') }}">Create Submission</a>
-        <a class="btn btn-outline-primary" href="{{ url_for('reports.reports_home') }}">Download Reports</a>
+        <a class="btn btn-outline-primary rt-action-btn" href="{{ url_for('candidates.new_candidate') }}">
+          {{ render_asset_image(asset_pack.service_icons.java, decorative=true, class_name='rt-action-icon') }}
+          <span>Add Candidate</span>
+        </a>
+        <a class="btn btn-outline-primary rt-action-btn" href="{{ url_for('jobs.new_job') }}">
+          {{ render_asset_image(asset_pack.service_icons.dotnet, decorative=true, class_name='rt-action-icon') }}
+          <span>Create Job</span>
+        </a>
+        <a class="btn btn-outline-primary rt-action-btn" href="{{ url_for('submissions.new_submission') }}">
+          {{ render_asset_image(asset_pack.service_icons.web_app, decorative=true, class_name='rt-action-icon') }}
+          <span>Create Submission</span>
+        </a>
+        <a class="btn btn-outline-primary rt-action-btn" href="{{ url_for('reports.reports_home') }}">
+          {{ render_asset_image(asset_pack.service_icons.cloud, decorative=true, class_name='rt-action-icon') }}
+          <span>Download Reports</span>
+        </a>
       </div>
     </div>
   </div>
 </div>
+
+{% if asset_pack.show_partner_logos and asset_pack.dashboard_partners %}
+<div class="rt-card mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h2 class="h6 mb-0">Trusted Partners</h2>
+    <span class="text-muted small">Jupiter client network</span>
+  </div>
+  <div class="rt-partner-strip">
+    {% for partner in asset_pack.dashboard_partners %}
+    <div class="rt-partner-pill" title="{{ partner.alt or 'Partner logo' }}">
+      {{ render_asset_image(partner, alt=partner.alt or 'Partner logo', class_name='rt-partner-logo', loading='lazy') }}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 
 <div class="rt-table-wrap">
   <div class="px-3 py-2 border-bottom">

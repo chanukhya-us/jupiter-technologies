@@ -16,6 +16,9 @@ candidates_bp = Blueprint("candidates", __name__)
 @login_required
 @roles_required("owner", "admin", "recruiter", "hr")
 def list_candidates():
+    from datetime import datetime, timedelta
+    from collections import defaultdict
+    
     query = Candidate.query
 
     search = request.args.get("search", "").strip()
@@ -36,6 +39,67 @@ def list_candidates():
         query = query.filter(Candidate.owner_user_id == int(owner_user_id))
 
     candidates = query.order_by(Candidate.updated_at.desc()).all()
+    
+    # Build trend data - show last 30 days or all data if limited
+    today = datetime.now().date()
+    thirty_days_ago = today - timedelta(days=29)
+    
+    # Get all candidates to check data availability
+    all_candidates = Candidate.query.all()
+    
+    # If we have candidates but none in last 30 days, expand the window
+    if all_candidates:
+        oldest_date = min(c.created_at.date() for c in all_candidates)
+        # If oldest data is older than 30 days, use it
+        if oldest_date < thirty_days_ago:
+            days_back = min((today - oldest_date).days, 90)  # Max 90 days
+            start_date = today - timedelta(days=days_back)
+        else:
+            start_date = thirty_days_ago
+    else:
+        start_date = thirty_days_ago
+    
+    # Get candidates in the date range
+    trend_candidates = [c for c in all_candidates if c.created_at.date() >= start_date]
+    
+    # Group by date
+    by_date = defaultdict(int)
+    for candidate in trend_candidates:
+        date_key = candidate.created_at.date()
+        by_date[date_key] += 1
+    
+    # Build labels and data
+    trend_labels = []
+    trend_data = []
+    current_date = start_date
+    while current_date <= today:
+        trend_labels.append(current_date.strftime("%m/%d"))
+        trend_data.append(by_date.get(current_date, 0))
+        current_date += timedelta(days=1)
+    
+    # Sample labels if too many (show every Nth label)
+    if len(trend_labels) > 30:
+        step = len(trend_labels) // 15  # Show ~15 labels
+        display_labels = [label if i % step == 0 else '' for i, label in enumerate(trend_labels)]
+    else:
+        display_labels = trend_labels
+    
+    trend_graph = {
+        "labels": display_labels,
+        "datasets": [{
+            "type": "line",
+            "label": "New Candidates",
+            "data": trend_data,
+            "borderColor": "#0f62fe",
+            "backgroundColor": "rgba(15, 98, 254, 0.1)",
+            "fill": True,
+            "tension": 0.4,
+        }],
+        "is_empty": len(all_candidates) == 0,  # Only empty if NO candidates at all
+        "total": sum(trend_data),
+        "days": len(trend_labels),
+    }
+    
     charts = {
         "status": build_donut_chart(
             [candidate.status for candidate in candidates],
@@ -52,7 +116,9 @@ def list_candidates():
         "candidates/list.html",
         candidates=candidates,
         charts=charts,
+        trend_graph=trend_graph,
         recruiters=recruiters,
+        candidate_statuses=CANDIDATE_STATUSES,
         filters={
             "search": search,
             "status": status,

@@ -289,3 +289,78 @@ class ActivityLog(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=now_utc)
 
     user = db.relationship("User")
+
+
+class MarketerProfile(TimestampMixin, db.Model):
+    __tablename__ = "marketer_profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    manager_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
+    timezone = db.Column(db.String(100), nullable=False, default="America/New_York")
+    workdays_mask = db.Column(db.String(20), nullable=False, default="1,1,1,1,1,0,0")
+    daily_cutoff_local_time = db.Column(db.String(5), nullable=False, default="18:00")
+    reminder_enabled = db.Column(db.Boolean, nullable=False, default=True)
+    reminder_times_local = db.Column(db.Text, nullable=False, default="16:00,17:30")
+    escalation_after_misses = db.Column(db.Integer, nullable=False, default=3)
+
+    user = db.relationship("User", foreign_keys=[user_id])
+    manager = db.relationship("User", foreign_keys=[manager_user_id])
+
+
+class MarketerDailyLog(TimestampMixin, db.Model):
+    __tablename__ = "marketer_daily_logs"
+    __table_args__ = (
+        db.UniqueConstraint("marketer_user_id", "log_date", name="uq_marketer_daily_log_date"),
+        db.Index(
+            "ix_marketer_daily_logs_marketer_date_status",
+            "marketer_user_id",
+            "log_date",
+            "status",
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    marketer_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    log_date = db.Column(db.Date, nullable=False, index=True)
+    status = db.Column(db.String(20), nullable=False, default="draft", index=True)
+    jobs_applied = db.Column(db.Integer, nullable=False, default=0)
+    follow_ups = db.Column(db.Integer, nullable=False, default=0)
+    interviews_scheduled = db.Column(db.Integer, nullable=False, default=0)
+    pay_discussions = db.Column(db.Integer, nullable=False, default=0)
+    job_type = db.Column(db.String(20), nullable=False, default="unknown", index=True)
+    hourly_rate_min = db.Column(db.Float)
+    hourly_rate_max = db.Column(db.Float)
+    project_duration_weeks = db.Column(db.Integer)
+    notes = db.Column(db.Text)
+    submitted_at = db.Column(db.DateTime(timezone=True))
+    submitted_by_user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    marketer = db.relationship("User", foreign_keys=[marketer_user_id])
+    submitted_by = db.relationship("User", foreign_keys=[submitted_by_user_id])
+
+
+class MarketerNotification(TimestampMixin, db.Model):
+    __tablename__ = "marketer_notifications"
+    __table_args__ = (
+        db.UniqueConstraint("idempotency_key", name="uq_marketer_notification_idempotency"),
+        db.Index("ix_marketer_notifications_marketer_date", "marketer_user_id", "target_date"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    marketer_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    target_date = db.Column(db.Date, nullable=False, index=True)
+    notification_type = db.Column(db.String(20), nullable=False, index=True)
+    channel = db.Column(db.String(20), nullable=False, default="in_app")
+    status = db.Column(db.String(20), nullable=False, default="pending", index=True)
+    idempotency_key = db.Column(db.String(255), nullable=False)
+    payload_json = db.Column(db.Text)
+    message = db.Column(db.Text)
+    sent_at = db.Column(db.DateTime(timezone=True))
+    read_at = db.Column(db.DateTime(timezone=True))
+
+    user = db.relationship("User", foreign_keys=[user_id])
+    marketer = db.relationship("User", foreign_keys=[marketer_user_id])

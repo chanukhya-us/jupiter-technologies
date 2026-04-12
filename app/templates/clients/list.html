@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'partials/charts.html' import donut_card %}
+{% from 'partials/assets.html' import render_asset_image %}
 {% block title %}Clients - Jupiter Technologies{% endblock %}
 {% block content %}
 <div class="rt-page-header">
@@ -26,6 +27,22 @@
   {{ donut_card('clientStatusChart', 'Client Status Mix', 'Active versus inactive client split in this view.', charts.status, 'Clients') }}
   {{ donut_card('clientContactChart', 'Contact Coverage', 'How many client records include a contact person.', charts.contact, 'Clients') }}
 </div>
+
+{% if asset_pack.show_partner_logos and asset_pack.clients_partners %}
+<div class="rt-card mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h2 class="h6 mb-0">Partner Logos</h2>
+    <span class="text-muted small">{{ asset_pack.clients_partners|length }} available</span>
+  </div>
+  <div class="rt-partner-grid">
+    {% for partner in asset_pack.clients_partners %}
+    <div class="rt-partner-card">
+      {{ render_asset_image(partner, alt=partner.alt or 'Partner logo', class_name='rt-partner-logo') }}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 
 <div class="rt-table-wrap">
   <div class="table-responsive">

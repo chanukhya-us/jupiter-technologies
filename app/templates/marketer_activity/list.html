@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Marketer Activity - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Marketer Activity</h1>
+    <p class="rt-subtitle">Daily activity logging and compliance tracking for marketers.</p>
+  </div>
+  <div class="d-flex gap-2">
+    {% if current_user.role.name in ['owner', 'admin'] %}
+    <a class="btn btn-outline-primary" href="{{ url_for('marketer_activity.onboard_marketer') }}">Onboard Marketer</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('marketer_activity.settings') }}">Settings</a>
+    {% endif %}
+    <a class="btn btn-outline-primary" href="{{ url_for('marketer_activity.reports', from_date=filters.from_date, to_date=filters.to_date, marketer_user_id=filters.marketer_user_id) }}">Reports</a>
+    {% if can_log_today and not today_log %}
+    <a class="btn btn-primary" href="{{ url_for('marketer_activity.new_log', log_date=filters.to_date, marketer_user_id=filters.marketer_user_id) }}">Log Today</a>
+    {% elif can_log_yesterday %}
+    <a class="btn btn-primary" href="{{ url_for('marketer_activity.new_log', marketer_user_id=filters.marketer_user_id) }}">New Log</a>
+    {% elif current_user.role.name in ['owner', 'admin'] %}
+    <a class="btn btn-primary" href="{{ url_for('marketer_activity.new_log', marketer_user_id=filters.marketer_user_id) }}">New Log</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="rt-filter-bar">
+  <form class="row g-2 align-items-end" method="get" action="{{ url_for('marketer_activity.list_logs') }}">
+    <div class="col-md-3">
+      <label class="form-label">From</label>
+      <input class="form-control" type="date" name="from_date" value="{{ filters.from_date }}" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">To</label>
+      <input class="form-control" type="date" name="to_date" value="{{ filters.to_date }}" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="status">
+        <option value="">All</option>
+        {% for status in marketer_log_statuses %}
+        <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if current_user.role.name in ['owner', 'admin'] %}
+    <div class="col-md-3">
+      <label class="form-label">Marketer</label>
+      <select class="form-select" name="marketer_user_id">
+        <option value="">All marketers</option>
+        {% for marketer in marketers %}
+        <option value="{{ marketer.id }}" {% if filters.marketer_user_id == marketer.id|string %}selected{% endif %}>{{ marketer.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% else %}
+    <input type="hidden" name="marketer_user_id" value="{{ filters.marketer_user_id }}" />
+    {% endif %}
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-primary" type="submit">Apply</button>
+    </div>
+  </form>
+</div>
+
+<div class="rt-kpi-grid">
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Total Logs</div><div class="rt-kpi-value">{{ metrics.total_logs }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Submitted Logs</div><div class="rt-kpi-value">{{ metrics.submitted_logs }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Missed Logs</div><div class="rt-kpi-value">{{ metrics.missed_logs }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Completion Rate</div><div class="rt-kpi-value">{{ metrics.completion_rate }}%</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Avg Activities / Log</div><div class="rt-kpi-value">{{ metrics.avg_activities_per_log }}</div></div>
+</div>
+
+<div class="rt-chart-grid">
+  {{ donut_card('marketerListStatusChart', 'Log Status Mix', 'Submitted, missed, and draft distribution for filtered marketer logs.', charts.status, 'Logs') }}
+  {{ donut_card('marketerListJobTypeChart', 'Job Type Mix', 'Distribution of job type across marketer logs.', charts.job_type, 'Logs') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          {% if current_user.role.name in ['owner', 'admin'] %}<th>Marketer</th>{% endif %}
+          <th>Status</th>
+          <th>Jobs</th>
+          <th>Follow-ups</th>
+          <th>Interviews</th>
+          <th>Pay Talks</th>
+          <th>Job Type</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        {% set status_key = log.status|lower %}
+        <tr>
+          <td>{{ log.log_date }}</td>
+          {% if current_user.role.name in ['owner', 'admin'] %}<td>{{ log.marketer.full_name if log.marketer else '-' }}</td>{% endif %}
+          <td>
+            <span class="rt-chip
+              {% if status_key in ['submitted', 'late', 'waived'] %}rt-chip-success
+              {% elif status_key == 'missed' %}rt-chip-danger
+              {% elif status_key == 'draft' %}rt-chip-neutral
+              {% else %}rt-chip-info{% endif %}">
+              {{ log.status }}
+            </span>
+          </td>
+          <td>{{ log.jobs_applied }}</td>
+          <td>{{ log.follow_ups }}</td>
+          <td>{{ log.interviews_scheduled }}</td>
+          <td>{{ log.pay_discussions }}</td>
+          <td>{{ log.job_type }}</td>
+          <td><a href="{{ url_for('marketer_activity.log_detail', log_id=log.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-muted">No marketer logs found for this filter.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

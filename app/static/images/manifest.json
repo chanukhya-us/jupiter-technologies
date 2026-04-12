@@ -1,0 +1,653 @@
+{
+  "generated_at": "2026-04-12T21:09:19.730062+00:00",
+  "source_site": "https://www.jupitertechnologies.net/",
+  "asset_count": 38,
+  "assets": [
+    {
+      "id": "brand/logo-light",
+      "category": "brand",
+      "source_url": "/Users/chanukhya/Downloads/J_image_logo.png",
+      "static_path": "images/brand/jupiter-main-logo.png",
+      "local_path": "app/static/images/brand/jupiter-main-logo.png",
+      "mime": "image/png",
+      "width": 426,
+      "height": 89,
+      "bytes": 28892,
+      "alt": "Jupiter Technologies logo",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:23.751269+00:00",
+      "integrity": {
+        "sha256": "a9b76ad3c6b3ae21103163da5c8985d4f0845be3de339fa3b59f756c60f76dc3"
+      }
+    },
+    {
+      "id": "brand/default-avatar",
+      "category": "brand",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/author.png",
+      "static_path": "images/brand/default-avatar-jupiter.png",
+      "local_path": "app/static/images/brand/default-avatar-jupiter.png",
+      "mime": "image/png",
+      "width": 40,
+      "height": 40,
+      "bytes": 3127,
+      "alt": "Default avatar icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:24.637998+00:00",
+      "integrity": {
+        "sha256": "98e8829f9db9b9defd2aa4f3d1a3c67cd9f4fdbd7bed3f40df3acdd348143fdd"
+      }
+    },
+    {
+      "id": "icon/service-web-app-development",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/7.png",
+      "static_path": "images/icons/jupiter-service-web-app-development.png",
+      "local_path": "app/static/images/icons/jupiter-service-web-app-development.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 3500,
+      "alt": "Web application development icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:25.496224+00:00",
+      "integrity": {
+        "sha256": "a0aea116d895d2e62d741787828c17acfe0bf261c4c20998fc03c418cba9fc35"
+      }
+    },
+    {
+      "id": "icon/service-quality-assurance",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/8.png",
+      "static_path": "images/icons/jupiter-service-quality-assurance.png",
+      "local_path": "app/static/images/icons/jupiter-service-quality-assurance.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 2749,
+      "alt": "Quality assurance icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:26.388816+00:00",
+      "integrity": {
+        "sha256": "e254ef418bea6f206b2712b74a9e352d6c4dda06a699c175322ce10b45494a22"
+      }
+    },
+    {
+      "id": "icon/service-dotnet",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/9.png",
+      "static_path": "images/icons/jupiter-service-dotnet.png",
+      "local_path": "app/static/images/icons/jupiter-service-dotnet.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 3535,
+      "alt": ".NET services icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:27.276798+00:00",
+      "integrity": {
+        "sha256": "12fe1c56c690a831e1a5f97a20108ffd5e8dd0a6a46b4755a64cf931217c2682"
+      }
+    },
+    {
+      "id": "icon/service-java",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/1.png",
+      "static_path": "images/icons/jupiter-service-java.png",
+      "local_path": "app/static/images/icons/jupiter-service-java.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 2019,
+      "alt": "Java services icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:28.133897+00:00",
+      "integrity": {
+        "sha256": "b94b68a89c7e504ee5454605719483c44ecc7aa6b732543a718dae31f7219cd3"
+      }
+    },
+    {
+      "id": "icon/service-cloud",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/2.png",
+      "static_path": "images/icons/jupiter-service-cloud.png",
+      "local_path": "app/static/images/icons/jupiter-service-cloud.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 4322,
+      "alt": "Cloud services icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:29.030113+00:00",
+      "integrity": {
+        "sha256": "699d5986d1ef83cd819d7fc122f11c281ca98a5beb98915572dd1586f75fafe2"
+      }
+    },
+    {
+      "id": "icon/service-salesforce",
+      "category": "icon",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/services/style4/3.png",
+      "static_path": "images/icons/jupiter-service-salesforce.png",
+      "local_path": "app/static/images/icons/jupiter-service-salesforce.png",
+      "mime": "image/png",
+      "width": 128,
+      "height": 128,
+      "bytes": 4914,
+      "alt": "Salesforce services icon",
+      "attribution": "\u00a9 Jupiter Technologies. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:29.895929+00:00",
+      "integrity": {
+        "sha256": "d6daedf9d88af36fc43c4781adbf34271fd3d5e933ae38ea485d1f4bc0822508"
+      }
+    },
+    {
+      "id": "partner/logo-01",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/1.png",
+      "static_path": "images/partners/partner-01.png",
+      "local_path": "app/static/images/partners/partner-01.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 51269,
+      "alt": "Partner logo 1",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:31.641882+00:00",
+      "integrity": {
+        "sha256": "951c77531c675746d3f80004c0d4ec435a3098816498addcb2cd5515db930e7a"
+      }
+    },
+    {
+      "id": "partner/logo-02",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/2.png",
+      "static_path": "images/partners/partner-02.png",
+      "local_path": "app/static/images/partners/partner-02.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 73952,
+      "alt": "Partner logo 2",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:33.688366+00:00",
+      "integrity": {
+        "sha256": "64082f22178318c9780129528145d50378d3df61f65b75cdc9bebbc429631f66"
+      }
+    },
+    {
+      "id": "partner/logo-03",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/3.png",
+      "static_path": "images/partners/partner-03.png",
+      "local_path": "app/static/images/partners/partner-03.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 32191,
+      "alt": "Partner logo 3",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:35.125295+00:00",
+      "integrity": {
+        "sha256": "76d176b62217cae1a5cb6d207126a566124401a8a7268e9b0360873865ae6cee"
+      }
+    },
+    {
+      "id": "partner/logo-04",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/4.png",
+      "static_path": "images/partners/partner-04.png",
+      "local_path": "app/static/images/partners/partner-04.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 66663,
+      "alt": "Partner logo 4",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:37.056070+00:00",
+      "integrity": {
+        "sha256": "458477435eb0edc0c0ff31a99fb4e7b1a09049172e70f76a3b6552e4e556ffaa"
+      }
+    },
+    {
+      "id": "partner/logo-05",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/5.png",
+      "static_path": "images/partners/partner-05.png",
+      "local_path": "app/static/images/partners/partner-05.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 30217,
+      "alt": "Partner logo 5",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:38.495617+00:00",
+      "integrity": {
+        "sha256": "2ad740c0b30b86b90c60f50ff8c6e8fa3d948e17477e491b1c9fb46fc91da584"
+      }
+    },
+    {
+      "id": "partner/logo-06",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/6.png",
+      "static_path": "images/partners/partner-06.png",
+      "local_path": "app/static/images/partners/partner-06.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 29986,
+      "alt": "Partner logo 6",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:39.932010+00:00",
+      "integrity": {
+        "sha256": "cb8d536382b5fe06725c1c1462d5727317e9bee1c5cde8a186577e0cdedb9096"
+      }
+    },
+    {
+      "id": "partner/logo-07",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/7.png",
+      "static_path": "images/partners/partner-07.png",
+      "local_path": "app/static/images/partners/partner-07.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 69472,
+      "alt": "Partner logo 7",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:42.037199+00:00",
+      "integrity": {
+        "sha256": "ee821e02a5f97f31824b85575c01285b71013a2b1e29d977bbd61c1637a0a877"
+      }
+    },
+    {
+      "id": "partner/logo-08",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/8.png",
+      "static_path": "images/partners/partner-08.png",
+      "local_path": "app/static/images/partners/partner-08.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 50646,
+      "alt": "Partner logo 8",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:43.823309+00:00",
+      "integrity": {
+        "sha256": "6cdedcb0346e131c06be6de6d795c698c9c058e69b8fcefc7805e786267daebc"
+      }
+    },
+    {
+      "id": "partner/logo-09",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/9.png",
+      "static_path": "images/partners/partner-09.png",
+      "local_path": "app/static/images/partners/partner-09.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 76074,
+      "alt": "Partner logo 9",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:46.284260+00:00",
+      "integrity": {
+        "sha256": "fe5d87c28c8a7de1ee52cf0a77e24d2202bff8c009c2b3d704c26eb96a7dec88"
+      }
+    },
+    {
+      "id": "partner/logo-10",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/10.png",
+      "static_path": "images/partners/partner-10.png",
+      "local_path": "app/static/images/partners/partner-10.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 43063,
+      "alt": "Partner logo 10",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:47.716155+00:00",
+      "integrity": {
+        "sha256": "5805c536bd6f17d96fe727685c58dcdc4e554f8ec394d9e2a080ed0a5c8f6cec"
+      }
+    },
+    {
+      "id": "partner/logo-11",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/11.png",
+      "static_path": "images/partners/partner-11.png",
+      "local_path": "app/static/images/partners/partner-11.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 43182,
+      "alt": "Partner logo 11",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:49.423634+00:00",
+      "integrity": {
+        "sha256": "5817c70d626064fe2612833815714a4f11b1d06e8d9c76bfd4dd9ee6f6fb409f"
+      }
+    },
+    {
+      "id": "partner/logo-12",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/12.png",
+      "static_path": "images/partners/partner-12.png",
+      "local_path": "app/static/images/partners/partner-12.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 34812,
+      "alt": "Partner logo 12",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:50.869500+00:00",
+      "integrity": {
+        "sha256": "f04564cd647048504002d7ef73222146a6a1906d4f58084e8d00471949945d7d"
+      }
+    },
+    {
+      "id": "partner/logo-13",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/13.png",
+      "static_path": "images/partners/partner-13.png",
+      "local_path": "app/static/images/partners/partner-13.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 34320,
+      "alt": "Partner logo 13",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:52.290746+00:00",
+      "integrity": {
+        "sha256": "e5c2c9bc6195595a4411f7673f84e8b24ee93c6bed485ca32ec38a27af196093"
+      }
+    },
+    {
+      "id": "partner/logo-14",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/14.png",
+      "static_path": "images/partners/partner-14.png",
+      "local_path": "app/static/images/partners/partner-14.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 42454,
+      "alt": "Partner logo 14",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:53.733103+00:00",
+      "integrity": {
+        "sha256": "e41cc37ab013b53482650f70d07853350245e51d5ba5b74aaf51f2deef56e6f4"
+      }
+    },
+    {
+      "id": "partner/logo-15",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/15.png",
+      "static_path": "images/partners/partner-15.png",
+      "local_path": "app/static/images/partners/partner-15.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 44422,
+      "alt": "Partner logo 15",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:55.375832+00:00",
+      "integrity": {
+        "sha256": "98961f051d72be52745bb346ad6793db42cd06f319ac2242aa716ec6841eef4b"
+      }
+    },
+    {
+      "id": "partner/logo-16",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/16.png",
+      "static_path": "images/partners/partner-16.png",
+      "local_path": "app/static/images/partners/partner-16.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 40001,
+      "alt": "Partner logo 16",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:56.816640+00:00",
+      "integrity": {
+        "sha256": "be8d7ee5e3c46471d1221fd1a3636bc9544895ca3db87c1ae669c4001a61026c"
+      }
+    },
+    {
+      "id": "partner/logo-17",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/17.png",
+      "static_path": "images/partners/partner-17.png",
+      "local_path": "app/static/images/partners/partner-17.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 38110,
+      "alt": "Partner logo 17",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:58.242638+00:00",
+      "integrity": {
+        "sha256": "2a4acdaac3c1852e7677a4bc362381f217e0f886c8c0458437d2ccafc80933d0"
+      }
+    },
+    {
+      "id": "partner/logo-18",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/18.png",
+      "static_path": "images/partners/partner-18.png",
+      "local_path": "app/static/images/partners/partner-18.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 45785,
+      "alt": "Partner logo 18",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:08:59.950983+00:00",
+      "integrity": {
+        "sha256": "2750f169a4d9a43e1e9d8dd937e0528420e8a0d369bf5bf5a958d27612ba06f0"
+      }
+    },
+    {
+      "id": "partner/logo-19",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/19.png",
+      "static_path": "images/partners/partner-19.png",
+      "local_path": "app/static/images/partners/partner-19.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 43013,
+      "alt": "Partner logo 19",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:01.413775+00:00",
+      "integrity": {
+        "sha256": "edd88d8a89d731b8cb0fc2e4218f370d77c7e8f0f6c80d09622d6d078928004b"
+      }
+    },
+    {
+      "id": "partner/logo-20",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/20.png",
+      "static_path": "images/partners/partner-20.png",
+      "local_path": "app/static/images/partners/partner-20.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 51132,
+      "alt": "Partner logo 20",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:03.180670+00:00",
+      "integrity": {
+        "sha256": "cad49c3084bc35a77d536f5b002e7f2184095b827df720295840e1758f27ea9b"
+      }
+    },
+    {
+      "id": "partner/logo-21",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/21.png",
+      "static_path": "images/partners/partner-21.png",
+      "local_path": "app/static/images/partners/partner-21.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 51339,
+      "alt": "Partner logo 21",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:04.974335+00:00",
+      "integrity": {
+        "sha256": "05cf0bb9ec19c4692b1b70e3d35cb38c7ec501fc63d31c8140856505eea10d09"
+      }
+    },
+    {
+      "id": "partner/logo-22",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/22.png",
+      "static_path": "images/partners/partner-22.png",
+      "local_path": "app/static/images/partners/partner-22.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 42983,
+      "alt": "Partner logo 22",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:06.371962+00:00",
+      "integrity": {
+        "sha256": "9c04aa42fe88568524f03a05bdbe80ab4ca07571b3283de9f52e2e4292f4f9c8"
+      }
+    },
+    {
+      "id": "partner/logo-23",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/23.png",
+      "static_path": "images/partners/partner-23.png",
+      "local_path": "app/static/images/partners/partner-23.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 57066,
+      "alt": "Partner logo 23",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:08.087814+00:00",
+      "integrity": {
+        "sha256": "c929d60fc25ce89152ed05368f24071c7619089ec094197b103f6a663ef70243"
+      }
+    },
+    {
+      "id": "partner/logo-24",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/24.png",
+      "static_path": "images/partners/partner-24.png",
+      "local_path": "app/static/images/partners/partner-24.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 81365,
+      "alt": "Partner logo 24",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:10.372189+00:00",
+      "integrity": {
+        "sha256": "19fac9839dc78d778ac6345cc790b39ccc7ad49ae617a2de11a6fc4e4dc43b46"
+      }
+    },
+    {
+      "id": "partner/logo-26",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/26.png",
+      "static_path": "images/partners/partner-26.png",
+      "local_path": "app/static/images/partners/partner-26.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 48104,
+      "alt": "Partner logo 26",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:12.035307+00:00",
+      "integrity": {
+        "sha256": "05540be2a0db07efbae35b63a5df9e782b043ea1db4d6bbf13bd6750b06b2b51"
+      }
+    },
+    {
+      "id": "partner/logo-27",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/27.png",
+      "static_path": "images/partners/partner-27.png",
+      "local_path": "app/static/images/partners/partner-27.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 50615,
+      "alt": "Partner logo 27",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:13.725425+00:00",
+      "integrity": {
+        "sha256": "9b773436ee3ba6b9afa306d34cccd7ba017343c6cab54029d180b81462e2e449"
+      }
+    },
+    {
+      "id": "partner/logo-28",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/28.png",
+      "static_path": "images/partners/partner-28.png",
+      "local_path": "app/static/images/partners/partner-28.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 64025,
+      "alt": "Partner logo 28",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:15.751958+00:00",
+      "integrity": {
+        "sha256": "3e75f637709f3271a1ed5210f8bf23f48db0b6a32d7e6e54d80bfc59bf3364ad"
+      }
+    },
+    {
+      "id": "partner/logo-29",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/29.png",
+      "static_path": "images/partners/partner-29.png",
+      "local_path": "app/static/images/partners/partner-29.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 26845,
+      "alt": "Partner logo 29",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:16.899116+00:00",
+      "integrity": {
+        "sha256": "a8c351062aa42ed5fab3db6c332c787c93b9c3b7df6287cc80dbda763e47c126"
+      }
+    },
+    {
+      "id": "partner/logo-30",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/30.png",
+      "static_path": "images/partners/partner-30.png",
+      "local_path": "app/static/images/partners/partner-30.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 36805,
+      "alt": "Partner logo 30",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:18.293052+00:00",
+      "integrity": {
+        "sha256": "343a887c6440b2ae969528273d8030c6f2613e260345df2cece9ed074e991879"
+      }
+    },
+    {
+      "id": "partner/logo-31",
+      "category": "partner",
+      "source_url": "https://www.jupitertechnologies.net/assets/images/partner/31.png",
+      "static_path": "images/partners/partner-31.png",
+      "local_path": "app/static/images/partners/partner-31.png",
+      "mime": "image/png",
+      "width": 558,
+      "height": 301,
+      "bytes": 37984,
+      "alt": "Partner logo 31",
+      "attribution": "Trademark/logo of its respective owner. Used with permission.",
+      "downloaded_at": "2026-04-12T21:09:19.728980+00:00",
+      "integrity": {
+        "sha256": "777c183023c10f8989e6872db22abcc900c8513bcae05069c9b8d983b3bea5ba"
+      }
+    }
+  ]
+}

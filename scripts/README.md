@@ -48,6 +48,29 @@ Load demo data (use load_test_data.py instead for better experience).
 python scripts/load_test_data.py
 ```
 
+### Marketer Reminder Processor (CLI)
+
+Process marketer reminder notifications, missed-entry marking, and escalations.
+
+```bash
+flask --app app.py process-marketer-reminders
+```
+
+### fetch_jupiter_assets.py
+
+Download approved Jupiter branding assets and partner logos, then generate
+`app/static/images/manifest.json` with metadata and integrity hashes.
+
+```bash
+python scripts/fetch_jupiter_assets.py
+```
+
+Use a local file as the primary Jupiter logo:
+
+```bash
+python scripts/fetch_jupiter_assets.py --main-logo "/Users/you/Downloads/J_image_logo.png"
+```
+
 ## Quick Reference
 
 **Load test data:**
@@ -59,6 +82,16 @@ python scripts/load_test_data.py
 ```bash
 python scripts/backup_db.py
 python scripts/zip_uploads.py
+```
+
+**Brand assets:**
+```bash
+python scripts/fetch_jupiter_assets.py
+```
+
+**Marketer reminders:**
+```bash
+flask --app app.py process-marketer-reminders
 ```
 
 **Restore:**

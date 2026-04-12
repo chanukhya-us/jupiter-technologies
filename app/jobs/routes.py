@@ -16,6 +16,9 @@ jobs_bp = Blueprint("jobs", __name__)
 @login_required
 @roles_required("owner", "admin", "recruiter", "hr")
 def list_jobs():
+    from datetime import datetime, timedelta
+    from collections import defaultdict
+    
     query = Job.query
 
     status = request.args.get("status", "").strip()
@@ -30,6 +33,67 @@ def list_jobs():
         query = query.filter(Job.owner_user_id == int(owner_user_id))
 
     jobs = query.order_by(Job.updated_at.desc()).all()
+    
+    # Build trend data - show last 30 days or all data if limited
+    today = datetime.now().date()
+    thirty_days_ago = today - timedelta(days=29)
+    
+    # Get all jobs to check data availability
+    all_jobs = Job.query.all()
+    
+    # If we have jobs but none in last 30 days, expand the window
+    if all_jobs:
+        oldest_date = min(j.created_at.date() for j in all_jobs)
+        # If oldest data is older than 30 days, use it
+        if oldest_date < thirty_days_ago:
+            days_back = min((today - oldest_date).days, 90)  # Max 90 days
+            start_date = today - timedelta(days=days_back)
+        else:
+            start_date = thirty_days_ago
+    else:
+        start_date = thirty_days_ago
+    
+    # Get jobs in the date range
+    trend_jobs = [j for j in all_jobs if j.created_at.date() >= start_date]
+    
+    # Group by date
+    by_date = defaultdict(int)
+    for job in trend_jobs:
+        date_key = job.created_at.date()
+        by_date[date_key] += 1
+    
+    # Build labels and data
+    trend_labels = []
+    trend_data = []
+    current_date = start_date
+    while current_date <= today:
+        trend_labels.append(current_date.strftime("%m/%d"))
+        trend_data.append(by_date.get(current_date, 0))
+        current_date += timedelta(days=1)
+    
+    # Sample labels if too many
+    if len(trend_labels) > 30:
+        step = len(trend_labels) // 15
+        display_labels = [label if i % step == 0 else '' for i, label in enumerate(trend_labels)]
+    else:
+        display_labels = trend_labels
+    
+    trend_graph = {
+        "labels": display_labels,
+        "datasets": [{
+            "type": "line",
+            "label": "New Jobs",
+            "data": trend_data,
+            "borderColor": "#24a148",
+            "backgroundColor": "rgba(36, 161, 72, 0.1)",
+            "fill": True,
+            "tension": 0.4,
+        }],
+        "is_empty": len(all_jobs) == 0,  # Only empty if NO jobs at all
+        "total": sum(trend_data),
+        "days": len(trend_labels),
+    }
+    
     charts = {
         "status": build_donut_chart(
             [job.status for job in jobs],
@@ -48,8 +112,10 @@ def list_jobs():
         "jobs/list.html",
         jobs=jobs,
         charts=charts,
+        trend_graph=trend_graph,
         clients=clients,
         recruiters=recruiters,
+        job_statuses=JOB_STATUSES,
         filters={
             "status": status,
             "client_id": client_id,

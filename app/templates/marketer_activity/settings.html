@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Marketer Settings - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Marketer Settings</h1>
+    <p class="rt-subtitle">Configure workdays, cutoffs, reminder schedule, and escalation thresholds.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary" href="{{ url_for('marketer_activity.onboard_marketer') }}">Onboard Marketer</a>
+    <a class="btn btn-outline-secondary" href="{{ url_for('marketer_activity.list_logs') }}">Back</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="rt-card">
+      <h2 class="h6 mb-3">Marketers</h2>
+      <div class="list-group">
+        {% for marketer in marketers %}
+        <a class="list-group-item list-group-item-action {% if selected_user_id == marketer.id %}active{% endif %}" href="{{ url_for('marketer_activity.settings', user_id=marketer.id) }}">
+          {{ marketer.full_name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="rt-card">
+      <form class="row g-3" method="post" action="{{ url_for('marketer_activity.settings') }}">
+        <input type="hidden" name="user_id" value="{{ selected_user_id }}" />
+
+        <div class="col-md-6">
+          <label class="form-label">Timezone</label>
+          <input class="form-control" name="timezone" value="{{ selected_profile.timezone }}" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Daily Cutoff (HH:MM)</label>
+          <input class="form-control" name="daily_cutoff_local_time" value="{{ selected_profile.daily_cutoff_local_time }}" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Reminder Times (comma separated HH:MM)</label>
+          <input class="form-control" name="reminder_times_local" value="{{ selected_profile.reminder_times_local }}" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Escalation After Misses</label>
+          <input class="form-control" type="number" min="1" name="escalation_after_misses" value="{{ selected_profile.escalation_after_misses }}" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Manager (optional)</label>
+          <select class="form-select" name="manager_user_id">
+            <option value="">-- None --</option>
+            {% for user in users %}
+            <option value="{{ user.id }}" {% if selected_profile.manager_user_id == user.id %}selected{% endif %}>{{ user.full_name }} ({{ user.role.name }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="reminder_enabled" name="reminder_enabled" value="1" {% if selected_profile.reminder_enabled %}checked{% endif %} />
+            <label class="form-check-label" for="reminder_enabled">Enable reminders and escalations</label>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Workdays</label>
+          <div class="d-flex flex-wrap gap-3">
+            {% set day_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+            {% for day in range(7) %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="workday_{{ day }}" name="workday_{{ day }}" value="1" {% if day in selected_workdays %}checked{% endif %} />
+              <label class="form-check-label" for="workday_{{ day }}">{{ day_labels[day] }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-primary" type="submit">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

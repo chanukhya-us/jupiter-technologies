@@ -14,9 +14,9 @@
       <canvas
         id="{{ chart_id }}"
         class="rt-donut-chart"
-        data-labels="{{ chart['labels'] | tojson }}"
-        data-values="{{ chart['values'] | tojson }}"
-        data-colors="{{ chart['colors'] | tojson }}"
+        data-labels='{{ chart["labels"] | tojson }}'
+        data-values='{{ chart["values"] | tojson }}'
+        data-colors='{{ chart["colors"] | tojson }}'
         data-total="{{ chart['total'] }}"
         data-center-label="{{ center_label }}"
       ></canvas>

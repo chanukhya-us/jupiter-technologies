@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+  {% from 'partials/assets.html' import render_asset_image %}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,12 +15,24 @@
   <body>
     {% if current_user.is_authenticated %}
     {% set p = request.path %}
+    {% set is_marketer = current_user.role and current_user.role.name == 'marketer' %}
     <div class="rt-shell">
       <aside class="rt-sidebar" id="rtSidebar">
-        <div class="rt-brand">Jupiter Technologies</div>
+        <div class="rt-brand">
+          <a href="{{ url_for('reports.dashboard') }}" class="rt-brand-link">
+            {% if asset_pack.brand_logo %}
+            {{ render_asset_image(asset_pack.brand_logo, alt='Jupiter Technologies logo', class_name='rt-brand-logo', loading='eager', fetchpriority='high') }}
+            {% endif %}
+            <span class="rt-brand-wordmark">Jupiter Technologies</span>
+          </a>
+        </div>
         <div class="rt-nav-label">Main Navigation</div>
         <nav class="nav flex-column">
           <a class="nav-link {% if p.startswith('/dashboard') %}active{% endif %}" href="{{ url_for('reports.dashboard') }}">Dashboard</a>
+          {% if current_user.role and current_user.role.name in ['owner', 'admin', 'marketer'] %}
+          <a class="nav-link {% if p.startswith('/marketer-activity') %}active{% endif %}" href="{{ url_for('marketer_activity.list_logs') }}">Marketer Activity</a>
+          {% endif %}
+          {% if not is_marketer %}
           <a class="nav-link {% if p.startswith('/candidates') %}active{% endif %}" href="{{ url_for('candidates.list_candidates') }}">Candidates</a>
           <a class="nav-link {% if p.startswith('/clients') %}active{% endif %}" href="{{ url_for('clients.list_clients') }}">Clients</a>
           <a class="nav-link {% if p.startswith('/jobs') %}active{% endif %}" href="{{ url_for('jobs.list_jobs') }}">Jobs</a>
@@ -31,6 +44,7 @@
           <a class="nav-link {% if p.startswith('/reports') %}active{% endif %}" href="{{ url_for('reports.reports_home') }}">Reports</a>
           {% if current_user.role and current_user.role.name in ['owner', 'admin'] %}
           <a class="nav-link {% if p.startswith('/activity-logs') %}active{% endif %}" href="{{ url_for('audit.activity_logs') }}">Admin</a>
+          {% endif %}
           {% endif %}
         </nav>
       </aside>
@@ -44,6 +58,7 @@
             <input class="rt-search" type="search" placeholder="Global search (candidates, jobs, submissions)" />
           </div>
           <div class="d-flex align-items-center gap-2">
+            {% if not is_marketer %}
             <div class="dropdown">
               <button class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button">
                 Create
@@ -55,7 +70,15 @@
                 <li><a class="dropdown-item" href="{{ url_for('timesheets.new_timesheet') }}">New Timesheet</a></li>
               </ul>
             </div>
-            <span class="rt-user-line">{{ current_user.full_name }} ({{ current_user.role.name }})</span>
+            {% else %}
+            <a class="btn btn-primary btn-sm" href="{{ url_for('marketer_activity.new_log') }}">Log Today</a>
+            {% endif %}
+            <div class="rt-user-info">
+              {% if asset_pack.avatar %}
+              {{ render_asset_image(asset_pack.avatar, decorative=true, class_name='rt-user-avatar') }}
+              {% endif %}
+              <span class="rt-user-line">{{ current_user.full_name }} ({{ current_user.role.name }})</span>
+            </div>
             <form action="{{ url_for('auth.logout') }}" method="post" class="d-inline">
               <button class="btn btn-outline-secondary btn-sm" type="submit">Logout</button>
             </form>
@@ -87,8 +110,8 @@
     {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}?v=6"></script>
     <script>
       (function () {
         const btn = document.getElementById("rtMenuToggle");

@@ -22,6 +22,7 @@ def app():
         recruiter_role = Role.query.filter_by(name="recruiter").first()
         hr_role = Role.query.filter_by(name="hr").first()
         employee_role = Role.query.filter_by(name="employee").first()
+        marketer_role = Role.query.filter_by(name="marketer").first()
 
         owner = User(
             full_name="Owner User",
@@ -51,7 +52,14 @@ def app():
             password_hash=generate_password_hash("password123"),
             role_id=employee_role.id,
         )
-        db.session.add_all([owner, recruiter, hr, employee_user])
+        marketer_user = User(
+            full_name="Marketer User",
+            username="marketer",
+            email="marketer@example.com",
+            password_hash=generate_password_hash("password123"),
+            role_id=marketer_role.id,
+        )
+        db.session.add_all([owner, recruiter, hr, employee_user, marketer_user])
         db.session.flush()
 
         client = Client(
