@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Timesheets - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Timesheets</h1>
+    <p class="rt-subtitle">Weekly submission queue for employee time tracking and approval.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('timesheets.new_timesheet') }}">New Timesheet</a>
+</div>
+
+<div class="rt-chart-grid">
+  {{ donut_card('timesheetStatusChart', 'Timesheet Status Mix', 'Draft-to-approval distribution for this listing.', charts.status, 'Timesheets') }}
+  {{ donut_card('timesheetEmployeeChart', 'Employee Timesheet Mix', 'Timesheet volume split by employee.', charts.employee, 'Timesheets') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>ID</th><th>Employee</th><th>Week</th><th>Hours</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for timesheet in timesheets %}
+        {% set status_key = timesheet.status|lower %}
+        <tr>
+          <td>{{ timesheet.id }}</td>
+          <td>{{ timesheet.employee.full_name if timesheet.employee else '-' }}</td>
+          <td>{{ timesheet.week_start }} to {{ timesheet.week_end }}</td>
+          <td>{{ timesheet.total_hours }}</td>
+          <td>
+            <span class="rt-chip
+              {% if status_key == 'approved' %}rt-chip-success
+              {% elif status_key == 'submitted' %}rt-chip-info
+              {% elif status_key == 'rejected' %}rt-chip-danger
+              {% elif status_key == 'draft' %}rt-chip-neutral
+              {% else %}rt-chip-warning{% endif %}">
+              {{ timesheet.status }}
+            </span>
+          </td>
+          <td><a href="{{ url_for('timesheets.timesheet_detail', timesheet_id=timesheet.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">No timesheets found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

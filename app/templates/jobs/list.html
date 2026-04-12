@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Jobs - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Jobs</h1>
+    <p class="rt-subtitle">Track open positions by client, owner, and pipeline state.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('jobs.new_job') }}">Add Job</a>
+</div>
+
+<form class="rt-filter-bar" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="status">
+        <option value="">All</option>
+        {% for status in job_statuses %}
+        <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Client</label>
+      <select class="form-select" name="client_id">
+        <option value="">All</option>
+        {% for client in clients %}
+        <option value="{{ client.id }}" {% if filters.client_id == client.id|string %}selected{% endif %}>{{ client.company_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Owner</label>
+      <select class="form-select" name="owner_user_id">
+        <option value="">All</option>
+        {% for recruiter in recruiters %}
+        <option value="{{ recruiter.id }}" {% if filters.owner_user_id == recruiter.id|string %}selected{% endif %}>{{ recruiter.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1 d-grid"><button class="btn btn-outline-primary">Filter</button></div>
+  </div>
+</form>
+
+<div class="rt-chart-grid">
+  {{ donut_card('jobStatusChart', 'Job Status Mix', 'Open versus paused or closed positions in this view.', charts.status, 'Jobs') }}
+  {{ donut_card('jobOwnerChart', 'Job Ownership Mix', 'Workload distribution by recruiting owner.', charts.owner, 'Jobs') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>Title</th><th>Client</th><th>Status</th><th>Owner</th><th></th></tr></thead>
+      <tbody>
+        {% for job in jobs %}
+        {% set status_key = job.status|lower %}
+        <tr>
+          <td>{{ job.title }}</td>
+          <td>{{ job.client.company_name if job.client else '-' }}</td>
+          <td>
+            <span class="rt-chip {% if status_key == 'open' %}rt-chip-success{% elif status_key == 'on_hold' %}rt-chip-warning{% else %}rt-chip-neutral{% endif %}">{{ job.status }}</span>
+          </td>
+          <td>{{ job.owner.full_name if job.owner else '-' }}</td>
+          <td><a href="{{ url_for('jobs.job_detail', job_id=job.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-muted">No jobs found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

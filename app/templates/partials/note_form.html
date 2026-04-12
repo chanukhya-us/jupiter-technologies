@@ -1,0 +1,22 @@
+<form method="post" action="{{ url_for('notes.create_note') }}" class="card card-body mb-3">
+  <input type="hidden" name="entity_type" value="{{ entity_type }}" />
+  <input type="hidden" name="entity_id" value="{{ entity_id }}" />
+  <input type="hidden" name="redirect_to" value="{{ request.path }}" />
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Type</label>
+      <select name="note_type" class="form-select">
+        {% for note_type in note_types %}
+        <option value="{{ note_type }}">{{ note_type }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-7">
+      <label class="form-label">Content</label>
+      <input name="content" class="form-control" required />
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-outline-primary" type="submit">Add Note</button>
+    </div>
+  </div>
+</form>

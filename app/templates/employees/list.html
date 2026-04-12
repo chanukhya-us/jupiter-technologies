@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Employees - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Employees</h1>
+    <p class="rt-subtitle">Delivery team view with status and employment-type distribution.</p>
+  </div>
+</div>
+
+<div class="rt-chart-grid">
+  {{ donut_card('employeeStatusChart', 'Employee Status Mix', 'Active and lifecycle status distribution for listed employees.', charts.status, 'Employees') }}
+  {{ donut_card('employeeTypeChart', 'Employment Type Mix', 'Employee versus contractor split.', charts.employment_type, 'Employees') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>Name</th><th>Status</th><th>Employment type</th><th>Email</th><th></th></tr></thead>
+      <tbody>
+        {% for employee in employees %}
+        <tr>
+          <td>{{ employee.full_name }}</td>
+          <td>
+            <span class="rt-chip {% if employee.status == 'active' %}rt-chip-success{% elif employee.status == 'on_hold' %}rt-chip-warning{% else %}rt-chip-neutral{% endif %}">
+              {{ employee.status }}
+            </span>
+          </td>
+          <td>{{ employee.employment_type }}</td>
+          <td>{{ employee.email or '-' }}</td>
+          <td><a href="{{ url_for('employees.employee_detail', employee_id=employee.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-muted">No employees found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

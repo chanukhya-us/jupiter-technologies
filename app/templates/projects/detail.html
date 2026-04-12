@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Project {{ project.project_name }} - Jupiter Technologies{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ project.project_name }}</h1>
+
+<form method="post" action="{{ url_for('projects.assign_employee', project_id=project.id) }}" class="card card-body mb-3">
+  <h2 class="h6">Assign employee</h2>
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4"><label class="form-label">Employee</label><select class="form-select" name="employee_id" required>{% for employee in employees %}<option value="{{ employee.id }}">{{ employee.full_name }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><label class="form-label">From</label><input class="form-control" type="date" name="assigned_from" /></div>
+    <div class="col-md-2"><label class="form-label">To</label><input class="form-control" type="date" name="assigned_to" /></div>
+    <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" name="status"><option value="active">active</option><option value="completed">completed</option></select></div>
+    <div class="col-md-2 d-grid"><button class="btn btn-primary">Assign</button></div>
+  </div>
+  <div class="mt-2"><label class="form-label">Notes</label><input class="form-control" name="notes" /></div>
+</form>
+
+{% set entity_type = 'project' %}
+{% set entity_id = project.id %}
+{% include 'partials/note_form.html' %}
+{% include 'partials/task_form.html' %}
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Assignments</div>
+      <ul class="list-group list-group-flush">
+        {% for assignment in assignments %}
+        <li class="list-group-item">{{ assignment.employee.full_name }} ({{ assignment.status }}) {{ assignment.assigned_from or '' }} - {{ assignment.assigned_to or '' }}</li>
+        {% else %}
+        <li class="list-group-item text-muted">No assignments yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Notes</div>
+      <ul class="list-group list-group-flush">
+        {% for note in notes %}
+        <li class="list-group-item">{{ note.note_type }}: {{ note.content }}</li>
+        {% else %}
+        <li class="list-group-item text-muted">No notes yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">Tasks</div>
+      <ul class="list-group list-group-flush">
+        {% for task in tasks %}
+        <li class="list-group-item">{{ task.title }} ({{ task.status }})</li>
+        {% else %}
+        <li class="list-group-item text-muted">No tasks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

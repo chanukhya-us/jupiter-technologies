@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Timesheet {{ timesheet.id }} - Jupiter Technologies{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Timesheet #{{ timesheet.id }}</h1>
+
+<div class="card card-body mb-3">
+  <div class="row g-3">
+    <div class="col-md-4"><strong>Employee:</strong> {{ timesheet.employee.full_name if timesheet.employee else '-' }}</div>
+    <div class="col-md-4"><strong>Week:</strong> {{ timesheet.week_start }} to {{ timesheet.week_end }}</div>
+    <div class="col-md-2"><strong>Hours:</strong> {{ timesheet.total_hours }}</div>
+    <div class="col-md-2"><strong>Status:</strong> {{ timesheet.status }}</div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+  {% if timesheet.status != 'approved' %}
+  <form method="post" action="{{ url_for('timesheets.submit_timesheet', timesheet_id=timesheet.id) }}">
+    <button class="btn btn-primary">Submit</button>
+  </form>
+  {% endif %}
+
+  {% if current_user.role.name in ['owner', 'admin', 'hr'] %}
+  <form method="post" action="{{ url_for('timesheets.approve_timesheet', timesheet_id=timesheet.id) }}" class="d-flex gap-2">
+    <input class="form-control" name="review_comments" placeholder="Approval comment" />
+    <button class="btn btn-success">Approve</button>
+  </form>
+  <form method="post" action="{{ url_for('timesheets.reject_timesheet', timesheet_id=timesheet.id) }}" class="d-flex gap-2">
+    <input class="form-control" name="review_comments" placeholder="Rejection comment" />
+    <button class="btn btn-outline-danger">Reject</button>
+  </form>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-header">Review metadata</div>
+  <div class="card-body">
+    <div><strong>Submitted at:</strong> {{ timesheet.submitted_at or '-' }}</div>
+    <div><strong>Reviewed at:</strong> {{ timesheet.reviewed_at or '-' }}</div>
+    <div><strong>Review comments:</strong> {{ timesheet.review_comments or '-' }}</div>
+  </div>
+</div>
+{% endblock %}

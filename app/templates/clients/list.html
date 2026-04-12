@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Clients - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Clients</h1>
+    <p class="rt-subtitle">Client portfolio visibility with clean health and data-quality signals.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('clients.new_client') }}">Add Client</a>
+</div>
+
+<form class="rt-filter-bar" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-10">
+      <label class="form-label">Company Search</label>
+      <input class="form-control" name="search" value="{{ search }}" />
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-outline-primary">Filter</button>
+    </div>
+  </div>
+</form>
+
+<div class="rt-chart-grid">
+  {{ donut_card('clientStatusChart', 'Client Status Mix', 'Active versus inactive client split in this view.', charts.status, 'Clients') }}
+  {{ donut_card('clientContactChart', 'Contact Coverage', 'How many client records include a contact person.', charts.contact, 'Clients') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for client in clients %}
+        <tr>
+          <td>{{ client.company_name }}</td>
+          <td>{{ client.contact_person or '-' }}</td>
+          <td>{{ client.email or '-' }}</td>
+          <td>
+            <span class="rt-chip {% if client.is_active %}rt-chip-success{% else %}rt-chip-neutral{% endif %}">
+              {{ 'active' if client.is_active else 'inactive' }}
+            </span>
+          </td>
+          <td><a href="{{ url_for('clients.client_detail', client_id=client.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-muted">No clients found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+<div class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label">Full name</label>
+    <input class="form-control" name="full_name" value="{{ candidate.full_name if candidate else '' }}" required />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">First name</label>
+    <input class="form-control" name="first_name" value="{{ candidate.first_name if candidate else '' }}" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Last name</label>
+    <input class="form-control" name="last_name" value="{{ candidate.last_name if candidate else '' }}" />
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Email</label>
+    <input class="form-control" name="email" value="{{ candidate.email if candidate else '' }}" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Phone</label>
+    <input class="form-control" name="phone" value="{{ candidate.phone if candidate else '' }}" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Location</label>
+    <input class="form-control" name="location" value="{{ candidate.location if candidate else '' }}" />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Experience</label>
+    <input class="form-control" type="number" step="0.1" name="years_experience" value="{{ candidate.years_experience if candidate else '' }}" />
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Source</label>
+    <input class="form-control" name="source" value="{{ candidate.source if candidate else '' }}" />
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Owner recruiter</label>
+    <select class="form-select" name="owner_user_id">
+      <option value="">-- Unassigned --</option>
+      {% for recruiter in recruiters %}
+      <option value="{{ recruiter.id }}" {% if candidate and candidate.owner_user_id == recruiter.id %}selected{% endif %}>
+        {{ recruiter.full_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Status</label>
+    <select class="form-select" name="status">
+      {% for status in candidate_statuses %}
+      <option value="{{ status }}" {% if candidate and candidate.status == status %}selected{% endif %}>{{ status }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-12">
+    <label class="form-label">Primary skills</label>
+    <textarea class="form-control" name="primary_skills" rows="2">{{ candidate.primary_skills if candidate else '' }}</textarea>
+  </div>
+  <div class="col-md-12">
+    <label class="form-label">Summary</label>
+    <textarea class="form-control" name="notes_summary" rows="2">{{ candidate.notes_summary if candidate else '' }}</textarea>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Resume (pdf/doc/docx)</label>
+    <input class="form-control" type="file" name="resume" />
+    {% if candidate and candidate.resume_file_path %}
+    <div class="form-text">Current: {{ candidate.resume_file_path }}</div>
+    {% endif %}
+  </div>
+</div>

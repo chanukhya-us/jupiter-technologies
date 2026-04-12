@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Activity Logs - Jupiter Technologies{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Activity Logs</h1>
+<div class="table-responsive">
+  <table class="table table-sm table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Timestamp</th>
+        <th>User</th>
+        <th>Action</th>
+        <th>Entity</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.id }}</td>
+        <td>{{ log.created_at }}</td>
+        <td>{% if log.user %}{{ log.user.username }}{% else %}-{% endif %}</td>
+        <td>{{ log.action_type }}</td>
+        <td>{{ log.entity_type }}{% if log.entity_id %}:{{ log.entity_id }}{% endif %}</td>
+        <td>{{ log.message }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-muted">No logs yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

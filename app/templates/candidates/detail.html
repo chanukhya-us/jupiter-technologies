@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Candidate {{ candidate.full_name }} - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">{{ candidate.full_name }}</h1>
+    <p class="rt-subtitle">Candidate profile, notes, submissions, tasks, and audit-ready status history.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('candidates.edit_candidate', candidate_id=candidate.id) }}">Edit</a>
+    <form method="post" action="{{ url_for('employees.convert_candidate', candidate_id=candidate.id) }}" class="d-inline">
+      <button class="btn btn-success btn-sm" type="submit">Convert to Employee</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-4"><div class="rt-card"><strong>Status</strong><div class="mt-1"><span class="rt-chip rt-chip-info">{{ candidate.status }}</span></div></div></div>
+  <div class="col-md-4"><div class="rt-card"><strong>Email</strong><div class="mt-1">{{ candidate.email or '-' }}</div></div></div>
+  <div class="col-md-4"><div class="rt-card"><strong>Owner</strong><div class="mt-1">{{ candidate.owner.full_name if candidate.owner else '-' }}</div></div></div>
+</div>
+
+<nav class="rt-tabs" aria-label="Candidate sections">
+  <a class="rt-tab-link" href="#profile">Profile</a>
+  <a class="rt-tab-link" href="#notes">Notes</a>
+  <a class="rt-tab-link" href="#submissions">Submissions</a>
+  <a class="rt-tab-link" href="#tasks">Tasks</a>
+  <a class="rt-tab-link" href="#attachments">Attachments</a>
+  <a class="rt-tab-link" href="#status-history">Status History</a>
+</nav>
+
+<section id="profile" class="rt-section">
+  <form method="post" action="{{ url_for('candidates.update_candidate_status', candidate_id=candidate.id) }}" class="rt-card mb-3">
+    <h2 class="h6">Change status</h2>
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label">New status</label>
+        <select name="status" class="form-select">
+          {% for status in candidate_statuses %}
+          <option value="{{ status }}" {% if status == candidate.status %}selected{% endif %}>{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-7">
+        <label class="form-label">Remarks</label>
+        <input class="form-control" name="remarks" />
+      </div>
+      <div class="col-md-2 d-grid">
+        <button class="btn btn-outline-primary">Update</button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section id="notes" class="rt-section mb-3">
+  {% set entity_type = 'candidate' %}
+  {% set entity_id = candidate.id %}
+  {% include 'partials/note_form.html' %}
+</section>
+
+<section id="tasks" class="rt-section mb-3">
+  {% include 'partials/task_form.html' %}
+</section>
+
+<div class="row g-3">
+  <div class="col-lg-6 rt-section" id="submissions">
+    <div class="rt-card h-100">
+      <h2 class="h6">Submissions</h2>
+      <ul class="list-group list-group-flush">
+        {% for submission in submissions %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Job {{ submission.job.title }} - {{ submission.status }}</span>
+          <a href="{{ url_for('submissions.submission_detail', submission_id=submission.id) }}">Open</a>
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No submissions</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-lg-6 rt-section" id="status-history">
+    <div class="rt-card h-100">
+      <h2 class="h6">Status History</h2>
+      <ul class="list-group list-group-flush">
+        {% for history in status_history %}
+        <li class="list-group-item">
+          {{ history.old_status or 'none' }} -> {{ history.new_status }} ({{ history.changed_at }})
+          {% if history.remarks %}<div class="small text-muted">{{ history.remarks }}</div>{% endif %}
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No history yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-6" id="notes-list">
+    <div class="rt-card">
+      <h2 class="h6">Notes</h2>
+      <ul class="list-group list-group-flush" id="notes">
+        {% for note in notes %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span><strong>{{ note.note_type }}</strong>: {{ note.content }}</span>
+          {% if current_user.role.name in ['owner', 'admin'] %}
+          <form method="post" action="{{ url_for('notes.delete_note', note_id=note.id) }}">
+            <input type="hidden" name="redirect_to" value="{{ request.path }}" />
+            <button class="btn btn-link text-danger btn-sm" type="submit">Delete</button>
+          </form>
+          {% endif %}
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No notes yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-lg-6 rt-section" id="tasks-list">
+    <div class="rt-card">
+      <h2 class="h6">Tasks</h2>
+      <ul class="list-group list-group-flush" id="tasks">
+        {% for task in tasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div><strong>{{ task.title }}</strong> ({{ task.status }})</div>
+            <div class="small text-muted">Due: {{ task.due_date or '-' }}</div>
+          </div>
+          {% if task.status != 'done' %}
+          <form method="post" action="{{ url_for('tasks.complete_task', task_id=task.id) }}">
+            <input type="hidden" name="redirect_to" value="{{ request.path }}" />
+            <button class="btn btn-outline-success btn-sm" type="submit">Complete</button>
+          </form>
+          {% endif %}
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No tasks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="rt-card mt-3 rt-section" id="attachments">
+  <h2 class="h6">Attachments</h2>
+  {% if candidate.resume_file_path %}
+  <p class="mb-0">Resume file: <code>{{ candidate.resume_file_path }}</code></p>
+  {% else %}
+  <p class="mb-0 text-muted">No resume attachment uploaded yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Reports - Jupiter Technologies{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Reports</h1>
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.candidates_csv') }}">Download Candidates CSV</a>
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.submissions_csv') }}">Download Submissions CSV</a>
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.timesheets_csv') }}">Download Timesheets CSV</a>
+</div>
+{% endblock %}

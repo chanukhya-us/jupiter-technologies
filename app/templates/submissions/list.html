@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Submissions - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Submissions</h1>
+    <p class="rt-subtitle">Monitor candidate submissions by recruiter, job, and outcome stage.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('submissions.new_submission') }}">New Submission</a>
+</div>
+
+<form class="rt-filter-bar" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label">Recruiter</label>
+      <select class="form-select" name="recruiter_user_id">
+        <option value="">All</option>
+        {% for recruiter in recruiters %}
+        <option value="{{ recruiter.id }}" {% if filters.recruiter_user_id == recruiter.id|string %}selected{% endif %}>{{ recruiter.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Job</label>
+      <select class="form-select" name="job_id">
+        <option value="">All</option>
+        {% for job in jobs %}
+        <option value="{{ job.id }}" {% if filters.job_id == job.id|string %}selected{% endif %}>{{ job.title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="status">
+        <option value="">All</option>
+        {% for status in submission_statuses %}
+        <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1 d-grid"><button class="btn btn-outline-primary">Filter</button></div>
+  </div>
+</form>
+
+<div class="rt-chart-grid">
+  {{ donut_card('submissionStatusChart', 'Submission Status Mix', 'Current funnel progression across filtered submissions.', charts.status, 'Submissions') }}
+  {{ donut_card('submissionRecruiterChart', 'Recruiter Activity Mix', 'Submission volume split by recruiter.', charts.recruiter, 'Submissions') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>ID</th><th>Candidate</th><th>Job</th><th>Recruiter</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for submission in submissions %}
+        {% set status_key = submission.status|lower %}
+        <tr>
+          <td>{{ submission.id }}</td>
+          <td>{{ submission.candidate.full_name }}</td>
+          <td>{{ submission.job.title }}</td>
+          <td>{{ submission.recruiter.full_name if submission.recruiter else '-' }}</td>
+          <td>
+            <span class="rt-chip
+              {% if status_key in ['joined', 'offered'] %}rt-chip-success
+              {% elif status_key in ['rejected'] %}rt-chip-danger
+              {% elif status_key in ['interview', 'under_review'] %}rt-chip-info
+              {% else %}rt-chip-neutral{% endif %}">
+              {{ submission.status }}
+            </span>
+          </td>
+          <td><a href="{{ url_for('submissions.submission_detail', submission_id=submission.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">No submissions found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

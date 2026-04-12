@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Candidates - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Candidates</h1>
+    <p class="rt-subtitle">Search and filter candidate pipeline by owner, status, source, and location.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('candidates.new_candidate') }}">Add Candidate</a>
+</div>
+
+<form class="rt-filter-bar" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Search</label>
+      <input class="form-control" name="search" value="{{ filters.search }}" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="status">
+        <option value="">All</option>
+        {% for status in candidate_statuses %}
+        <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Source</label>
+      <input class="form-control" name="source" value="{{ filters.source }}" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Location</label>
+      <input class="form-control" name="location" value="{{ filters.location }}" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Owner</label>
+      <select class="form-select" name="owner_user_id">
+        <option value="">All</option>
+        {% for recruiter in recruiters %}
+        <option value="{{ recruiter.id }}" {% if filters.owner_user_id == recruiter.id|string %}selected{% endif %}>{{ recruiter.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-outline-primary">Filter</button>
+    </div>
+  </div>
+</form>
+
+<div class="rt-chart-grid">
+  {{ donut_card('candidateStatusChart', 'Candidate Status Mix', 'Current pipeline distribution for filtered results.', charts.status, 'Candidates') }}
+  {{ donut_card('candidateSourceChart', 'Candidate Source Mix', 'Top sources feeding this candidate view.', charts.source, 'Candidates') }}
+</div>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Owner</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for candidate in candidates %}
+        {% set status_key = candidate.status|lower %}
+        <tr>
+          <td>{{ candidate.full_name }}</td>
+          <td>
+            <span class="rt-chip
+              {% if status_key in ['joined', 'selected'] %}rt-chip-success
+              {% elif status_key in ['rejected'] %}rt-chip-danger
+              {% elif status_key in ['interview', 'submitted'] %}rt-chip-info
+              {% elif status_key in ['on_hold'] %}rt-chip-warning
+              {% else %}rt-chip-neutral{% endif %}">
+              {{ candidate.status }}
+            </span>
+          </td>
+          <td>{{ candidate.owner.full_name if candidate.owner else '-' }}</td>
+          <td>{{ candidate.email or '-' }}</td>
+          <td>{{ candidate.phone or '-' }}</td>
+          <td><a href="{{ url_for('candidates.candidate_detail', candidate_id=candidate.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">No candidates found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

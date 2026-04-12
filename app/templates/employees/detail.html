@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Employee {{ employee.full_name }} - Jupiter Technologies{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ employee.full_name }}</h1>
+
+<form method="post" action="{{ url_for('employees.update_employee', employee_id=employee.id) }}" class="card card-body mb-3">
+  <h2 class="h6">Employee details</h2>
+  <div class="row g-2">
+    <div class="col-md-4"><label class="form-label">Full name</label><input class="form-control" name="full_name" value="{{ employee.full_name }}" /></div>
+    <div class="col-md-4"><label class="form-label">Email</label><input class="form-control" name="email" value="{{ employee.email or '' }}" /></div>
+    <div class="col-md-4"><label class="form-label">Phone</label><input class="form-control" name="phone" value="{{ employee.phone or '' }}" /></div>
+    <div class="col-md-3"><label class="form-label">Employment type</label><select class="form-select" name="employment_type">{% for employment_type in employment_types %}<option value="{{ employment_type }}" {% if employee.employment_type == employment_type %}selected{% endif %}>{{ employment_type }}</option>{% endfor %}</select></div>
+    <div class="col-md-3"><label class="form-label">Status</label><select class="form-select" name="status">{% for status in employee_statuses %}<option value="{{ status }}" {% if employee.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></div>
+    <div class="col-md-3"><label class="form-label">Billing status</label><input class="form-control" name="billing_status" value="{{ employee.billing_status }}" /></div>
+    <div class="col-md-3"><label class="form-label">Reporting manager</label><input class="form-control" name="reporting_manager" value="{{ employee.reporting_manager or '' }}" /></div>
+    <div class="col-md-3"><label class="form-label">Start date</label><input class="form-control" type="date" name="start_date" value="{{ employee.start_date or '' }}" /></div>
+    <div class="col-md-3"><label class="form-label">End date</label><input class="form-control" type="date" name="end_date" value="{{ employee.end_date or '' }}" /></div>
+  </div>
+  <div class="mt-2"><button class="btn btn-primary">Save Employee</button></div>
+</form>
+
+{% set entity_type = 'employee' %}
+{% set entity_id = employee.id %}
+{% include 'partials/note_form.html' %}
+{% include 'partials/task_form.html' %}
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Assignments</div>
+      <ul class="list-group list-group-flush">
+        {% for assignment in assignments %}
+        <li class="list-group-item">{{ assignment.project.project_name }} ({{ assignment.status }})</li>
+        {% else %}
+        <li class="list-group-item text-muted">No assignments yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">Timesheets</div>
+      <ul class="list-group list-group-flush">
+        {% for timesheet in timesheets %}
+        <li class="list-group-item d-flex justify-content-between"><span>{{ timesheet.week_start }} to {{ timesheet.week_end }} ({{ timesheet.status }})</span><a href="{{ url_for('timesheets.timesheet_detail', timesheet_id=timesheet.id) }}">Open</a></li>
+        {% else %}
+        <li class="list-group-item text-muted">No timesheets yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Notes</div>
+      <ul class="list-group list-group-flush">
+        {% for note in notes %}
+        <li class="list-group-item">{{ note.note_type }}: {{ note.content }}</li>
+        {% else %}
+        <li class="list-group-item text-muted">No notes yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">Tasks</div>
+      <ul class="list-group list-group-flush">
+        {% for task in tasks %}
+        <li class="list-group-item">{{ task.title }} ({{ task.status }})</li>
+        {% else %}
+        <li class="list-group-item text-muted">No tasks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

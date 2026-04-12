@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Projects - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Projects</h1>
+    <p class="rt-subtitle">Project delivery board with quick portfolio distribution signals.</p>
+  </div>
+</div>
+
+<div class="rt-chart-grid">
+  {{ donut_card('projectStatusChart', 'Project Status Mix', 'Active, completed, and on-hold project distribution.', charts.status, 'Projects') }}
+  {{ donut_card('projectClientChart', 'Client Project Mix', 'Project volume split across clients.', charts.client, 'Projects') }}
+</div>
+
+<form method="post" action="{{ url_for('projects.create_project') }}" class="rt-card mb-3">
+  <h2 class="h6">Create project</h2>
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3"><label class="form-label">Project name</label><input class="form-control" name="project_name" required /></div>
+    <div class="col-md-2"><label class="form-label">Project code</label><input class="form-control" name="project_code" /></div>
+    <div class="col-md-3"><label class="form-label">Client</label><select class="form-select" name="client_id"><option value="">--</option>{% for client in clients %}<option value="{{ client.id }}">{{ client.company_name }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><label class="form-label">Start</label><input class="form-control" type="date" name="start_date" /></div>
+    <div class="col-md-2"><label class="form-label">End</label><input class="form-control" type="date" name="end_date" /></div>
+    <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" name="status">{% for status in project_statuses %}<option value="{{ status }}">{{ status }}</option>{% endfor %}</select></div>
+    <div class="col-md-8"><label class="form-label">Notes</label><input class="form-control" name="notes" /></div>
+    <div class="col-md-2 d-grid"><button class="btn btn-primary">Create</button></div>
+  </div>
+</form>
+
+<div class="rt-table-wrap">
+  <div class="table-responsive">
+    <table class="table rt-table table-striped">
+      <thead><tr><th>Name</th><th>Client</th><th>Status</th><th>Dates</th><th></th></tr></thead>
+      <tbody>
+        {% for project in projects %}
+        <tr>
+          <td>{{ project.project_name }}</td>
+          <td>{{ project.client.company_name if project.client else '-' }}</td>
+          <td>
+            <span class="rt-chip {% if project.status == 'active' %}rt-chip-success{% elif project.status == 'on_hold' %}rt-chip-warning{% else %}rt-chip-neutral{% endif %}">
+              {{ project.status }}
+            </span>
+          </td>
+          <td>{{ project.start_date or '-' }} to {{ project.end_date or '-' }}</td>
+          <td><a href="{{ url_for('projects.project_detail', project_id=project.id) }}">Open</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-muted">No projects yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

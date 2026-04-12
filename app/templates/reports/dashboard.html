@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% from 'partials/charts.html' import donut_card %}
+{% block title %}Dashboard - Jupiter Technologies{% endblock %}
+{% block content %}
+<div class="rt-page-header">
+  <div>
+    <h1 class="rt-page-title">Dashboard</h1>
+    <p class="rt-subtitle">Daily operational snapshot for recruiting and delivery workflows.</p>
+  </div>
+</div>
+
+<div class="rt-kpi-grid">
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Total Candidates</div><div class="rt-kpi-value">{{ metrics.total_candidates }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Open Jobs</div><div class="rt-kpi-value">{{ metrics.open_jobs }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Submissions This Week</div><div class="rt-kpi-value">{{ metrics.submissions_this_week }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Interviews Pending</div><div class="rt-kpi-value">{{ metrics.interviews_pending }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Active Employees</div><div class="rt-kpi-value">{{ metrics.active_employees }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Pending Timesheets</div><div class="rt-kpi-value">{{ metrics.pending_timesheets }}</div></div>
+  <div class="rt-kpi-card"><div class="rt-kpi-label">Overdue Tasks</div><div class="rt-kpi-value">{{ metrics.overdue_tasks }}</div></div>
+</div>
+
+<div class="rt-chart-grid">
+  {{ donut_card('dashboardCandidateStatusChart', 'Candidates by Status', 'Pipeline composition across all candidates.', charts.candidate_status, 'Candidates') }}
+  {{ donut_card('dashboardJobStatusChart', 'Jobs by Status', 'Open, on-hold, and closed position split.', charts.job_status, 'Jobs') }}
+  {{ donut_card('dashboardSubmissionStatusChart', 'Submissions by Status', 'Conversion progress across the submission funnel.', charts.submission_status, 'Submissions') }}
+  {{ donut_card('dashboardTimesheetStatusChart', 'Timesheets by Status', 'Draft to approval movement in timesheet workflow.', charts.timesheet_status, 'Timesheets') }}
+  {{ donut_card('dashboardTaskStatusChart', 'Tasks by Status', 'Open work versus completed operational tasks.', charts.task_status, 'Tasks') }}
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <div class="rt-card h-100">
+      <h2 class="h6 mb-3">Operational Queues</h2>
+      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <div>Timesheets pending review</div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="rt-chip rt-chip-info">{{ metrics.pending_timesheets }}</span>
+          <a href="{{ url_for('timesheets.list_timesheets') }}">Open</a>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <div>Overdue tasks requiring action</div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="rt-chip rt-chip-caution">{{ metrics.overdue_tasks }}</span>
+          <a href="{{ url_for('tasks.list_tasks') }}">Open</a>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-2">
+        <div>Interviews in pipeline</div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="rt-chip rt-chip-warning">{{ metrics.interviews_pending }}</span>
+          <a href="{{ url_for('submissions.list_submissions', status='interview') }}">Open</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="rt-card h-100">
+      <h2 class="h6 mb-3">Quick Actions</h2>
+      <div class="d-grid gap-2">
+        <a class="btn btn-outline-primary" href="{{ url_for('candidates.new_candidate') }}">Add Candidate</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('jobs.new_job') }}">Create Job</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('submissions.new_submission') }}">Create Submission</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('reports.reports_home') }}">Download Reports</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rt-table-wrap">
+  <div class="px-3 py-2 border-bottom">
+    <h2 class="h6 mb-0">Recent Activity</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table rt-table table-sm mb-0">
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Action</th>
+          <th>Entity</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in recent_logs %}
+        <tr>
+          <td>{{ log.created_at }}</td>
+          <td>{{ log.action_type }}</td>
+          <td>{{ log.entity_type }}{% if log.entity_id %}:{{ log.entity_id }}{% endif %}</td>
+          <td>{{ log.message }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-muted">No activity yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
